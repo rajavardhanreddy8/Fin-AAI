@@ -262,3 +262,8 @@
 - Observed result: Added a local HTTP server test covering the OpenAI-compatible adapter's `/chat/completions` path, bearer authentication, model payload, completion-token cap, and JSON response parsing. The focused test passed 4/4; the full Python suite also passed after the change.
 - Evidence: `tests/test_api_agent_config.py`; commit `60468bf`.
 - Limitation: This validates the adapter contract only. It is not a live provider call until the owner configures a real provider key.
+
+### E0039 | 2026-09-26 Asia/Kolkata | Result | README and full audit now point to the same clean source
+- Checkpoint: C003, C005, C007, C010
+- Observed result: The root README now documents the one-command full audit, secure provider setup, and visible report paths. The regenerated full audit points to commit `3e9161e`, reports a clean tree, Python tests passing, all workstream tests passing, and the Momentum 40-test suite passing.
+- Evidence: `README.md`; `output/finance-system-full-verification.json`.

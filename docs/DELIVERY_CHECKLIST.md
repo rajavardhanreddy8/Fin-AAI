@@ -22,6 +22,17 @@ User objective: a personal Indian-equity platform for growth investing and tradi
 
 2026-09-10: Existing Python research suite passed 67 tests during status review. Momentum source cloned into `momentum-site`; dependencies installed. Initial finance route returned HTTP 200 locally at port 5173. All other completion items remain unproven.
 
-## Current verification (2026-09-26)\n\n- Root source is committed locally through `1210a9d`; the configured GitHub remote remains at the original first commit because publication awaits explicit authorization.\n- Windows pre-market and post-market tasks are registered and Ready.\n- Official refresh through 2026-09-25 updated 499/500 discovery symbols and made all ten pilot financial profiles ready.\n- Momentum version 45 is privately deployed; local build and application suite passed 40 tests.\n- Python research suite passed 77 tests; trading workstream passed its 21 tests.\n- The latest trading promotion gate remains `not_eligible` at 19 holdout trades.\n- Provider variables are missing; the current ITC report is explicitly `provider_required` and issues no recommendation.\n\n## Status note (2026-09-24)
+## Current verification (2026-09-26)
+
+- Root source is committed locally through `1210a9d`; the configured GitHub remote remains at the original first commit because publication awaits explicit authorization.
+- Windows pre-market and post-market tasks are registered and Ready.
+- Official refresh through 2026-09-25 updated 499/500 discovery symbols and made all ten pilot financial profiles ready.
+- Momentum version 45 is privately deployed; local build and application suite passed 40 tests.
+- Python research suite passed 77 tests; trading workstream passed its 21 tests.
+- The latest trading promotion gate remains `not_eligible` at 19 holdout trades.
+- Provider variables are missing; the current ITC report is explicitly `provider_required` and issues no recommendation.
+
+## Status note (2026-09-24)
 This checklist records the 2026-09-10 baseline. For current goals, status and execution order, use [CONSOLIDATED_GOALS.md](CONSOLIDATED_GOALS.md) and [PROJECT_LOG.md](../PROJECT_LOG.md).
+
 

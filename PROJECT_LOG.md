@@ -197,3 +197,9 @@
 - Evidence: `scripts/verify_finance_system.py`; `output/finance-system-verification.json`; `output/finance-automation-2026-09-26-pre.json`; `git log --oneline`; scheduler query output.
 - Limitations: The root commit has not been pushed because the remote push requires explicit approval for exporting the source to `origin/main`. Provider variables are missing, so specialist model calls remain `configuration_required`; the latest full market run had 2 verified, 4 stale, 4 blocked, and 490 missing evidence across 500 identities. No broker or real-money execution is connected.
 - Follow-up: Approve the exact remote push if desired; configure a caller-owned provider; complete a market-day pre/post cycle; improve evidence coverage; then collect paper results before any broker decision.
+
+### E0028 | 2026-09-26 Asia/Kolkata | Result | Hosted Momentum test suite verified
+- Checkpoint: C007, C008
+- Observed result: The nested Momentum production build completed successfully and its full application suite passed 40 tests, including finance route rendering, responsive dashboard states, evidence fallback, paper-ledger controls, promotion gates, and API route coverage.
+- Evidence: `npm test` in `momentum-site`; build output listed `/finance`, `/api/finance`, `/api/finance/backtest`, `/api/finance/research`, `/api/finance/paper`, and `/api/finance/digest` routes.
+- Limitation: This validates the local source and build, not a fresh production deployment or provider-backed model call. The currently deployed Site remains a separate managed checkout.

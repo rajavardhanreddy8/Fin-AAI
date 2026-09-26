@@ -12,9 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "output"
 
 
-def command(args: list[str]) -> dict:
+def command(args: list[str], *, cwd: Path = ROOT, timeout: int = 90, env: dict | None = None) -> dict:
     try:
-        result = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=90)
+        result = subprocess.run(args, cwd=cwd, capture_output=True, text=True, timeout=timeout, env=env)
         return {"returncode": result.returncode, "stdout": result.stdout.strip(), "stderr": result.stderr.strip()}
     except Exception as exc:
         return {"returncode": None, "stdout": "", "stderr": f"{type(exc).__name__}: {exc}"}
@@ -40,39 +40,49 @@ def latest_report() -> tuple[str | None, dict | None]:
     return None, None
 
 
+def test_record(result: dict) -> dict:
+    text = result["stdout"] or result["stderr"]
+    return {"passed": result["returncode"] == 0, "returncode": result["returncode"], "output_tail": text[-1200:]}
+
+
 def main() -> int:
+    full = "--full" in sys.argv[1:]
     git_status = command(["git", "status", "--short"])
     git_head = command(["git", "rev-parse", "HEAD"])
     git_remote = command(["git", "ls-remote", "origin", "refs/heads/main"])
     tests_env = os.environ.copy()
     tests_env["PYTHONPATH"] = str(ROOT / "src") + os.pathsep + tests_env.get("PYTHONPATH", "")
-    try:
-        test_run = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-q"], cwd=ROOT, capture_output=True, text=True, timeout=90, env=tests_env)
-        tests = {"returncode": test_run.returncode, "stdout": test_run.stdout.strip(), "stderr": test_run.stderr.strip()}
-    except Exception as exc:
-        tests = {"returncode": None, "stdout": "", "stderr": f"{type(exc).__name__}: {exc}"}
+    tests = command([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-q"], env=tests_env, timeout=120)
     task_query = command(["powershell", "-NoProfile", "-Command", "Get-ScheduledTask -TaskName 'fin-AAI API agents pre-market','fin-AAI API agents post-market' | Select-Object -ExpandProperty TaskName"])
     report_path, report = latest_report()
     payload = {
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "projectRoot": str(ROOT),
-        "git": {
-            "head": git_head["stdout"],
-            "remoteMain": git_remote["stdout"],
-            "workingTreeClean": not bool(git_status["stdout"]),
-            "status": git_status["stdout"].splitlines(),
-        },
-        "tests": {"passed": tests["returncode"] == 0, "returncode": tests["returncode"], "output": tests["stdout"] or tests["stderr"]},
+        "git": {"head": git_head["stdout"], "remoteMain": git_remote["stdout"], "workingTreeClean": not bool(git_status["stdout"]), "status": git_status["stdout"].splitlines()},
+        "tests": test_record(tests),
         "scheduler": {"registeredTasks": task_query["stdout"].splitlines(), "queryReturncode": task_query["returncode"]},
         "provider": provider_status(),
         "latestAgentReport": {"path": report_path, "report": report},
         "boundary": "Research and simulation only; no broker orders are placed.",
     }
+    if full:
+        node_tests = [
+            ["node", "workstream/investing/tests/finance-investing.test.mjs"],
+            ["node", "workstream/investing/tests/finance-research.test.mjs"],
+            ["node", "workstream/trading/finance-paper.test.mjs"],
+            ["node", "workstream/trading/finance-paper-v2.test.mjs"],
+        ]
+        payload["workstreamTests"] = {str(args[-1]): test_record(command(args, timeout=60)) for args in node_tests}
+        site = ROOT / "momentum-site"
+        site_result = command(["npm.cmd", "test"], cwd=site, timeout=180)
+        payload["siteTests"] = test_record(site_result)
+    required = [payload["tests"]["passed"], payload["scheduler"]["queryReturncode"] == 0]
+    if full:
+        required += [all(item["passed"] for item in payload["workstreamTests"].values()), payload["siteTests"]["passed"]]
     print(json.dumps(payload, indent=2, ensure_ascii=False))
-    return 0 if tests["returncode"] == 0 else 1
+    return 0 if all(required) else 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
 

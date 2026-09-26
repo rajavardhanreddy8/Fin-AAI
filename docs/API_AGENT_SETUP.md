@@ -43,3 +43,7 @@ python scripts\run_finance_agents.py --phase pre --db output\finance-automation.
 ```
 
 The verifier reports only `set` or `missing`; it never prints the key. The scheduled tasks inherit the user environment after they are restarted or the next user session begins. Do not paste API keys into chat, reports, source files, or task arguments.
+
+## Full local audit
+
+Run `python scripts/verify_finance_system.py --full` for one secret-safe report covering the Python suite, all four investing/trading workstream tests, the Momentum build and 40 application tests, scheduler registration, provider-variable presence, Git state, and the latest agent report. The report intentionally shows provider keys only as `set` or `missing`.

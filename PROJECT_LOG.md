@@ -251,3 +251,8 @@
 - Observed result: `python scripts/verify_finance_system.py --full` completed with a clean root tree, Python tests passing, all four investing/trading workstream suites passing, and the Momentum build/application suite passing 40 tests. The report also records both Ready scheduler tasks, provider-variable presence, the remote commit, and the latest agent report without exposing secrets.
 - Evidence: `output/finance-system-full-verification.json`; commit `ef983f1`.
 - Limitation: A green audit proves implementation behavior and current operations; it does not prove provider-backed recommendations or profitability. Those remain explicit gates.
+
+### E0037 | 2026-09-26 Asia/Kolkata | Fix | Automation reports now separate paper trading explicitly
+- Checkpoint: C008, C010
+- Observed result: Every newly generated pre/post report now includes `paperTrading.status: separate_momentum_ledger`, `ordersCreated: 0`, and a plain-language boundary stating that the local scheduler never creates or advances paper orders. An isolated weekend run verified the field in the generated JSON.
+- Evidence: `scripts/run_finance_agents.py`; `output/finance-automation-2026-09-26-pre.json`; commit `67775bb`.

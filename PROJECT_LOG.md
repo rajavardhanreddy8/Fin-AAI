@@ -203,3 +203,9 @@
 - Observed result: The nested Momentum production build completed successfully and its full application suite passed 40 tests, including finance route rendering, responsive dashboard states, evidence fallback, paper-ledger controls, promotion gates, and API route coverage.
 - Evidence: `npm test` in `momentum-site`; build output listed `/finance`, `/api/finance`, `/api/finance/backtest`, `/api/finance/research`, `/api/finance/paper`, and `/api/finance/digest` routes.
 - Limitation: This validates the local source and build, not a fresh production deployment or provider-backed model call. The currently deployed Site remains a separate managed checkout.
+
+### E0029 | 2026-09-26 Asia/Kolkata | Result | Ten-company deterministic coverage run saved
+- Checkpoint: C001, C003, C008, C009
+- Observed result: The reproducible pilot batch covered all 10 configured companies at the 2026-07-18 as-of date. Eight companies passed deterministic readiness; ICICI Bank and NTPC were correctly blocked because their latest accepted annual periods lacked matching annual reports. The result remains `ready: false` for the full batch, so no claim of universal readiness is made.
+- Evidence: `output/pilot-coverage.json`; database `output/pilot-coverage.db`; command `weekly-universe --fixtures-root tests/fixtures --universe config/test_universe.csv --window-start 2026-07-07 --as-of 2026-07-18`.
+- Follow-up: Acquire and validate the missing annual reports, then rerun the same batch with a current as-of date. This fixture run does not prove live market freshness.

@@ -267,3 +267,10 @@
 - Checkpoint: C003, C005, C007, C010
 - Observed result: The root README now documents the one-command full audit, secure provider setup, and visible report paths. The regenerated full audit points to commit `3e9161e`, reports a clean tree, Python tests passing, all workstream tests passing, and the Momentum 40-test suite passing.
 - Evidence: `README.md`; `output/finance-system-full-verification.json`.
+
+### E0040 | 2026-09-26 Asia/Kolkata | Result | Visible acceptance record and current full audit
+- Checkpoint: C003, C005, C007, C010
+- Observed result: Added `docs/REAL_WORK_STATUS.md` as a visible acceptance record. The current full audit at commit `9a9c3ac` reports a clean tree, 78 Python tests passing, investing/trading workstream suites passing, Momentum 40-test suite passing, and both scheduler tasks registered.
+- Evidence: `docs/REAL_WORK_STATUS.md`; `output/finance-system-full-verification.json`; commit `9a9c3ac`.
+- Limitation: Provider variables remain missing; the system remains research/simulation only and the trading strategy is not promotion-eligible.
+- Bundle: `output/fin-AAI-local.bundle` verifies complete with SHA-256 `40348401E2D7DFAD78D007D43B9C364551884FDC18D4966F1BE7A2FB0358D74B`.

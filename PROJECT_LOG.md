@@ -290,3 +290,9 @@
 - Checkpoint: C003, C007, C010
 - Observed result: The Trading Lab now shows the fixed-protocol walk-forward summary and keeps the strategy visibly unpromoted. Momentum OS version 46 is active in production; deployment `appgdep_6ab7aed196308191b74d64b6bdf3e804` succeeded from Site source commit `b62645f6279bfbb3c16ef5c22a952b9fe0e3fe56`.
 - Evidence: `https://momentum-os.rajavreddy-g.chatgpt.site`; Site version 46; `output/finance-walkforward-2026-09-26.json`.
+
+### E0044 | 2026-09-26 Asia/Kolkata | Site fix | Planner saves survive navigation
+- Checkpoint: C003, C010
+- Observed result: Added `keepalive: true` only to the debounced `/api/planner-state` PUT request. Momentum Site tests passed 40/40, and Site version 47 deployed successfully from commit `7a9544e2b156aceca984f646aa615bb084d2bc32`.
+- Evidence: `https://momentum-os.rajavreddy-g.chatgpt.site`; deployment `appgdep_6ab7b0de748081918525da4f90cda8e9`; version 47.
+- Limitation: Production logs should be rechecked after a real navigation/save to confirm the browser cancellation is resolved.

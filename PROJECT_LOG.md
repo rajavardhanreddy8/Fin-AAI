@@ -209,3 +209,10 @@
 - Observed result: The reproducible pilot batch covered all 10 configured companies at the 2026-07-18 as-of date. Eight companies passed deterministic readiness; ICICI Bank and NTPC were correctly blocked because their latest accepted annual periods lacked matching annual reports. The result remains `ready: false` for the full batch, so no claim of universal readiness is made.
 - Evidence: `output/pilot-coverage.json`; database `output/pilot-coverage.db`; command `weekly-universe --fixtures-root tests/fixtures --universe config/test_universe.csv --window-start 2026-07-07 --as-of 2026-07-18`.
 - Follow-up: Acquire and validate the missing annual reports, then rerun the same batch with a current as-of date. This fixture run does not prove live market freshness.
+
+### E0030 | 2026-09-26 Asia/Kolkata | Result | Current official refresh completed for the ten pilot universe
+- Checkpoint: C001, C003, C005, C007, C008, C009
+- Observed result: An official-source refresh through 2026-09-25 updated 499 of 500 discovery identities in a copied seed. The current-date ten-company pipeline then completed with all 10 pilot companies ready and 0 blocked, including the previously missing ICICI Bank and NTPC annual-report evidence. ITC's current evidence review records 20 accepted financial facts, 14 accepted documents, no governance flags, a latest official close of INR 269 on 2026-09-25, and a deterministic P/E calculation of 16.62.
+- Evidence: `output/finance-seed-refresh.json`; `output/current-universe.json`; `output/current-universe.db`; `output/itc-current-evidence.md`.
+- Limitation: The ITC report is explicitly `provider_required` and issues no recommendation because no caller-owned model provider is configured. The broad 500-company refresh is discovery pricing only; full financial evidence remains limited to the ten pilot profiles.
+- Follow-up: Configure a provider for cited synthesis, then run the same frozen current evidence packet. Expand source-backed financial coverage beyond the pilot set and collect forward paper results before any capital decision.

@@ -1,0 +1,63 @@
+{
+  "policy_version": "1.0.0",
+  "market": "India listed equities",
+  "research_only": true,
+  "automatic_trading": false,
+  "priority_order": [
+    "current_portfolio_risks",
+    "current_portfolio_opportunities",
+    "watchlist_changes",
+    "new_stock_opportunities",
+    "market_and_policy_changes"
+  ],
+  "source_tiers": {
+    "official": 1.0,
+    "company_primary": 0.9,
+    "reputable_secondary": 0.65,
+    "market_opinion": 0.35,
+    "social": 0.1
+  },
+  "immutable_safety_gates": {
+    "missing_or_stale_data_blocks_positive_recommendation": true,
+    "fundamentals_before_price": true,
+    "governance_review_before_positive_recommendation": true,
+    "valuation_required_before_entry": true,
+    "liquidity_required_for_small_cap_or_high_risk": true,
+    "exit_trigger_required_before_entry": true,
+    "social_media_cannot_be_primary_evidence": true,
+    "manual_approval_required_for_weight_changes": true,
+    "manual_approval_required_for_any_trade": true
+  },
+  "mandatory_red_flags": [
+    "debt_stress",
+    "promoter_pledge_or_adverse_sale",
+    "weak_cash_conversion",
+    "auditor_resignation_or_qualification",
+    "regulatory_action",
+    "related_party_concern",
+    "suspicious_or_repeated_promotional_announcements"
+  ],
+  "classifications": [
+    "core_investment",
+    "high_risk_investment",
+    "speculative_investment",
+    "watchlist_only",
+    "avoid"
+  ],
+  "data_quality": {
+    "maximum_price_age_days": 7,
+    "maximum_filing_age_days": 550,
+    "minimum_official_documents_per_security": 1
+  },
+  "future_score_weights_not_active": {
+    "fundamentals": 25,
+    "governance": 20,
+    "valuation": 15,
+    "business_quality_and_growth": 15,
+    "liquidity": 10,
+    "technical_trend": 5,
+    "policy_and_sector_support": 5,
+    "portfolio_fit": 5
+  }
+}
+

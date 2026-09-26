@@ -1,0 +1,32 @@
+{
+  "isin": "INE044A01036",
+  "company_name": "Sun Pharmaceutical Industries Limited",
+  "nse_symbol": "SUNPHARMA",
+  "bse_code": "524715",
+  "company_kind": "non_bank",
+  "required_metrics": ["revenue", "profit_after_tax", "eps_diluted"],
+  "sources": [
+    {
+      "source_id": "sunpharma_ir",
+      "source_name": "Sun Pharma Investor Relations",
+      "evidence_tier": "company_primary",
+      "base_url": "https://sunpharma.com/investors/"
+    },
+    {
+      "source_id": "nse_filings",
+      "source_name": "NSE Corporate Filings",
+      "evidence_tier": "official",
+      "base_url": "https://nsearchives.nseindia.com/"
+    },
+    {
+      "source_id": "spglobal_sunpharma_eod",
+      "source_name": "S&P Global Market Intelligence via StockAnalysis",
+      "evidence_tier": "reputable_secondary",
+      "base_url": "https://stockanalysis.com/quote/nse/SUNPHARMA/history/"
+    }
+  ],
+  "price_source": {
+    "source_id": "spglobal_sunpharma_eod",
+    "source_location": "https://stockanalysis.com/quote/nse/SUNPHARMA/history/"
+  }
+}

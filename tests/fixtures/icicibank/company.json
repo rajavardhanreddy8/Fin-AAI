@@ -1,0 +1,32 @@
+{
+  "isin": "INE090A01021",
+  "company_name": "ICICI Bank Limited",
+  "nse_symbol": "ICICIBANK",
+  "bse_code": "532174",
+  "company_kind": "bank",
+  "required_metrics": ["net_interest_income", "profit_after_tax"],
+  "sources": [
+    {
+      "source_id": "nse_filings",
+      "source_name": "NSE Corporate Filings",
+      "evidence_tier": "official",
+      "base_url": "https://nsearchives.nseindia.com/corporate/"
+    },
+    {
+      "source_id": "icicibank_ir",
+      "source_name": "ICICI Bank Investor Relations",
+      "evidence_tier": "company_primary",
+      "base_url": "https://www.icici.bank.in/about-us/invest-relations"
+    },
+    {
+      "source_id": "spglobal_icicibank_eod",
+      "source_name": "S&P Global Market Intelligence via StockAnalysis",
+      "evidence_tier": "reputable_secondary",
+      "base_url": "https://stockanalysis.com/quote/nse/ICICIBANK/history/"
+    }
+  ],
+  "price_source": {
+    "source_id": "spglobal_icicibank_eod",
+    "source_location": "https://stockanalysis.com/quote/nse/ICICIBANK/history/"
+  }
+}

@@ -1,0 +1,12 @@
+isin,company_name,nse_symbol,bse_code,sector,style_bucket,active
+INE002A01018,Reliance Industries Limited,RELIANCE,500325,Energy and diversified,core,1
+INE467B01029,Tata Consultancy Services Limited,TCS,532540,Information technology,core,1
+INE040A01034,HDFC Bank Limited,HDFCBANK,500180,Private sector bank,core,1
+INE090A01021,ICICI Bank Limited,ICICIBANK,532174,Private sector bank,core,1
+INE009A01021,Infosys Limited,INFY,500209,Information technology,core,1
+INE018A01030,Larsen & Toubro Limited,LT,500510,Capital goods and construction,growth,1
+INE044A01036,Sun Pharmaceutical Industries Limited,SUNPHARMA,524715,Pharmaceuticals,growth,1
+INE154A01025,ITC Limited,ITC,500875,Consumer staples,core,1
+INE733E01010,NTPC Limited,NTPC,532555,Power utilities,core,1
+INE585B01010,Maruti Suzuki India Limited,MARUTI,532500,Automobiles,growth,1
+

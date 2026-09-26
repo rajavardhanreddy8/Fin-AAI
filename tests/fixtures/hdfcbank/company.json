@@ -1,0 +1,38 @@
+{
+  "isin": "INE040A01034",
+  "company_name": "HDFC Bank Limited",
+  "nse_symbol": "HDFCBANK",
+  "bse_code": "500180",
+  "company_kind": "bank",
+  "required_metrics": ["net_interest_income", "profit_after_tax"],
+  "sources": [
+    {
+      "source_id": "nse_filings",
+      "source_name": "NSE Corporate Filings",
+      "evidence_tier": "official",
+      "base_url": "https://nsearchives.nseindia.com/corporate/"
+    },
+    {
+      "source_id": "sec_edgar",
+      "source_name": "SEC EDGAR 6-K exhibits",
+      "evidence_tier": "official",
+      "base_url": "https://www.sec.gov/Archives/edgar/data/1144967/"
+    },
+    {
+      "source_id": "hdfcbank_ir",
+      "source_name": "HDFC Bank Investor Relations",
+      "evidence_tier": "company_primary",
+      "base_url": "https://www.hdfcbank.com/personal/about-us/investor-relations/"
+    },
+    {
+      "source_id": "spglobal_hdfcbank_eod",
+      "source_name": "S&P Global Market Intelligence via StockAnalysis",
+      "evidence_tier": "reputable_secondary",
+      "base_url": "https://stockanalysis.com/quote/nse/HDFCBANK/history/"
+    }
+  ],
+  "price_source": {
+    "source_id": "spglobal_hdfcbank_eod",
+    "source_location": "https://stockanalysis.com/quote/nse/HDFCBANK/history/"
+  }
+}

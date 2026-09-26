@@ -1,0 +1,32 @@
+{
+  "isin": "INE009A01021",
+  "company_name": "Infosys Limited",
+  "nse_symbol": "INFY",
+  "bse_code": "500209",
+  "company_kind": "non_bank",
+  "required_metrics": ["revenue", "operating_income", "net_income", "eps_diluted"],
+  "sources": [
+    {
+      "source_id": "infosys_ir",
+      "source_name": "Infosys Investor Relations",
+      "evidence_tier": "company_primary",
+      "base_url": "https://www.infosys.com/investors/"
+    },
+    {
+      "source_id": "nse_filings",
+      "source_name": "NSE Corporate Filings",
+      "evidence_tier": "official",
+      "base_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements"
+    },
+    {
+      "source_id": "spglobal_infy_eod",
+      "source_name": "S&P Global Market Intelligence via StockAnalysis",
+      "evidence_tier": "reputable_secondary",
+      "base_url": "https://stockanalysis.com/quote/nse/INFY/history/"
+    }
+  ],
+  "price_source": {
+    "source_id": "spglobal_infy_eod",
+    "source_location": "https://stockanalysis.com/quote/nse/INFY/history/"
+  }
+}

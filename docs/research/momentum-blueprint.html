@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Momentum investing and trading blueprint</title><style>
+:root{color-scheme:light;--ink:#1d232a;--muted:#555d66;--line:#d7dce1}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font:17px/1.65 Georgia,"Times New Roman",serif}
+main{max-width:1060px;margin:0 auto;padding:54px 38px 90px}h1,h2,h3,nav,table{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+h1{font-size:38px;line-height:1.16;font-weight:650;letter-spacing:-1px;margin:0 0 34px}
+h2{font-size:24px;line-height:1.3;font-weight:650;margin:52px 0 18px;padding-top:18px;border-top:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:19px;line-height:1.35;margin:30px 0 12px}p{margin:0 0 18px}a{color:#245274;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
+li{margin:8px 0}table{width:100%;border-collapse:collapse;margin:24px 0 28px;font-size:13px;line-height:1.5}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:12px 10px}th{background:#f0f2f4;font-weight:650}
+td:first-child{font-weight:600}code{font-family:Consolas,monospace;font-size:.87em}pre{overflow:auto;white-space:pre-wrap;border:1px solid var(--line);padding:15px}
+nav{font-size:14px;color:var(--muted);margin:0 0 32px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+nav ul{list-style:none;padding:0;margin:0;columns:2;column-gap:35px}nav li{margin:0 0 7px;break-inside:avoid}nav a{color:var(--ink);text-decoration:none}nav a:hover{text-decoration:underline}
+.footnote{font-size:13px;line-height:1.6}.footnote li{margin-bottom:14px}.footnote-ref{font:11px system-ui;text-decoration:none}.footnote-backref{padding-left:6px}
+@media(max-width:700px){main{padding:30px 18px 60px}h1{font-size:30px}h2{font-size:22px}nav ul{columns:1}table{display:block;overflow-x:auto;font-size:12px}th,td{min-width:145px}body{font-size:16px}}
+@page{size:A4;margin:17mm 15mm}
+@media print{main{padding:0;max-width:none}body{font-size:10.5pt;line-height:1.5}h1{font-size:25pt}h2{font-size:15pt;margin-top:25px;break-after:avoid}h3{font-size:12pt;break-after:avoid}table{font-size:8.2pt;display:table}tr{break-inside:avoid}th{background:#eee!important;print-color-adjust:exact}nav{display:none}a{color:inherit}.footnote{font-size:8pt}.footnote-backref{display:none}}
+</style></head><body><main><h1 id="momentum-investing-and-trading-blueprint">Momentum investing and trading blueprint</h1><nav aria-label="Report contents"><div class="toc">
+<ul>
+<li><a href="#momentum-investing-and-trading-blueprint">Momentum investing and trading blueprint</a><ul>
+<li><a href="#recommended-direction">Recommended direction</a></li>
+<li><a href="#current-platform-and-readiness">Current platform and readiness</a></li>
+<li><a href="#investor-methods-translated-into-agent-work">Investor methods translated into agent work</a></li>
+<li><a href="#trading-methods-and-the-initial-experiment-set">Trading methods and the initial experiment set</a></li>
+<li><a href="#capital-transaction-costs-and-broker-comparison">Capital, transaction costs and broker comparison</a></li>
+<li><a href="#data-sources-and-api-contracts">Data sources and API contracts</a></li>
+<li><a href="#evidence-storage-and-retrieval">Evidence storage and retrieval</a></li>
+<li><a href="#models-machine-learning-and-efficiency">Models, machine learning and efficiency</a></li>
+<li><a href="#benchmarks-and-promotion-gates">Benchmarks and promotion gates</a></li>
+<li><a href="#architecture-and-agent-communication">Architecture and agent communication</a></li>
+<li><a href="#india-execution-requirements">India execution requirements</a></li>
+<li><a href="#dashboard-and-news-digestion">Dashboard and news digestion</a></li>
+<li><a href="#technical-implementation-sequence">Technical implementation sequence</a></li>
+<li><a href="#unresolved-evidence-and-decision-limits">Unresolved evidence and decision limits</a></li>
+<li><a href="#sources">Sources</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+<h2 id="recommended-direction">Recommended direction</h2>
+<p>Build a personal, evidence-driven investing and trading system with two separate research mandates and one shared risk controller. Begin with Indian cash equities, daily observations, low turnover and simulated execution. The investing mandate studies business value over years; the trading mandate tests price behaviour over days and months. Both may conclude that cash is the best available action.</p>
+<p>The starting financial constraint is INR 10,000 plus at least INR 2,000 monthly. At that scale, avoiding uneconomic transactions and recurring technology bills matters as much as finding promising securities. Low share price is an affordability characteristic, not evidence of cheap valuation or rapid future growth. Market capitalization, dilution, cash generation, financing needs and the price paid for those economics determine the investment case.</p>
+<p>The recommended first stack is the existing Momentum dashboard, the existing Python research package, a local research worker, versioned files, a small durable job ledger and Groq for bounded document tasks. Start the broker evaluation with Upstox's read-only analytics access; compare Zerodha and Dhan for eventual low-turnover delivery execution. This is a conditional implementation recommendation, not a finding that a strategy already earns excess returns.</p>
+<p>All broker terms, API capabilities and regulatory references below were checked against primary sources available on 11 September 2026. Proposed thresholds, budgets and performance targets are explicitly design choices. No new strategy backtest, model comparison, credential validation or live-execution benchmark was performed for this report.</p>
+<h2 id="current-platform-and-readiness">Current platform and readiness</h2>
+<p>The repository contains meaningful research and simulation components, but it does not yet establish an investable edge. Code existence, passing software tests, valid citations and profitable trading are separate forms of evidence.</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Observed implementation</th>
+<th>Remaining requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Research foundation</td>
+<td>Python collectors, financial normalization, governance rules, source records and recommendation validation</td>
+<td>Complete current evidence, publication-time histories and broader issuer coverage</td>
+</tr>
+<tr>
+<td>Momentum interface</td>
+<td>Finance research, investing, daily-history and paper-trading components</td>
+<td>Verify the integrated build and hosted behaviour after the latest changes</td>
+</tr>
+<tr>
+<td>Universe</td>
+<td>A broader company identity list exists; seeded financial evidence remains concentrated in ten companies</td>
+<td>Distinguish searchable identity, complete evidence and strategy eligibility</td>
+</tr>
+<tr>
+<td>Groq</td>
+<td>Server-side integration selects openai/gpt-oss-20b and requests JSON output</td>
+<td>Confirm a valid configured credential with a controlled smoke test; add strict schemas and usage accounting</td>
+</tr>
+<tr>
+<td>Investing agents</td>
+<td>Fundamentals, governance and valuation roles followed by synthesis over a frozen evidence snapshot</td>
+<td>Full-document extraction, claim-to-passage verification, durable jobs and prospective evaluation</td>
+</tr>
+<tr>
+<td>Trading</td>
+<td>Single-security breakout simulation with chronological development/test segments</td>
+<td>Portfolio simulation, contributions, current and historical fees, point-in-time membership and robust holdouts</td>
+</tr>
+<tr>
+<td>Paper trading</td>
+<td>Whole-share sizing, event records and simulated fills</td>
+<td>Exact strategy parity, account-wide risk, reconciliation and operational fault testing</td>
+</tr>
+<tr>
+<td>Brokerage</td>
+<td>No verified order gateway in the inspected finance path</td>
+<td>Broker selection, compliant authentication, execution controls and explicit live activation</td>
+</tr>
+</tbody>
+</table>
+<p>These observations come from the inspected source files, rather than an assumption that historical project-log checkpoints describe today's deployment.<sup id="fnref:50"><a class="footnote-ref" href="#fn:50">50</a></sup></p>
+<p>Two issues take priority over adding more models. First, the backtest sets its stop at entry price minus two ATR units, where entry is based on the next opening price. The paper path accepts a stop calculated from the signal closing price. A gap therefore changes risk, sizing, eligibility and target behaviour differently. Choose one complete specification, apply it in both paths and invalidate comparisons across the old definitions.</p>
+<p>Second, the market adapter scales historical OHLC by adjusted close while retaining vendor volume. Adjusted prices are useful for return calculations, but they cannot directly represent historical rupee affordability and share counts. Maintain actual execution prices and corporate actions separately. Model splits, bonuses, dividends and changing quantities without double-counting their returns. The current simple backtest also excludes monthly contributions, so it cannot answer the personal capital-plan question.</p>
+<h2 id="investor-methods-translated-into-agent-work">Investor methods translated into agent work</h2>
+<p>Public accounts of successful investors reveal useful decision disciplines. They do not reveal a complete, reproducible source of future excess return. Famous winners also have unusual experience, access, capital structures and favourable surviving examples.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Transferable principle</th>
+<th>Agent output</th>
+<th>Boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buffett</td>
+<td>Understand business economics, returns on capital, reinvestment and price</td>
+<td>Per-share earnings bridge, capital-efficiency history, valuation scenarios and thesis failure conditions</td>
+<td>A quality screen cannot reproduce Berkshire's judgment or financing</td>
+</tr>
+<tr>
+<td>Lynch</td>
+<td>Familiar products can generate leads; investigate economics and expansion</td>
+<td>Discovery note followed by competition, balance-sheet and runway evidence</td>
+<td>Product familiarity cannot approve an investment</td>
+</tr>
+<tr>
+<td>Marks</td>
+<td>Understand permanent-loss paths and expectations; remain humble about macro forecasts</td>
+<td>Financing stresses, reverse valuation, downside scenarios and contrary evidence</td>
+<td>A confident macro narrative cannot become a buy trigger</td>
+</tr>
+<tr>
+<td>Quality/profitability research</td>
+<td>Test whether profitable, financially resilient businesses offer useful signals</td>
+<td>Sector-appropriate, point-in-time factors with explicit definitions</td>
+<td>Historical factor results require local validation after costs</td>
+</tr>
+</tbody>
+</table>
+<p>Berkshire's owner's manual and 2007 letter support business ownership, capital efficiency and sensible purchase prices.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> Lynch's own Fidelity discussion treats familiarity as the start of further investigation.<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup> Marks distinguishes useful risk assessment from the illusion of reliable macro forecasting and emphasizes long-term value and asymmetry.<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup><sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup></p>
+<p>Novy-Marx and Quality Minus Junk provide empirical reasons to investigate profitability and quality. Their populations and constructions differ from a small Indian delivery portfolio; Quality Minus Junk includes long-short portfolios. Research on the historical cross-section also demonstrates how apparent accounting anomalies can weaken outside their discovery samples. These are starting hypotheses, not a ready-made Indian stock list.<sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup><sup id="fnref:7"><a class="footnote-ref" href="#fn:7">7</a></sup><sup id="fnref:8"><a class="footnote-ref" href="#fn:8">8</a></sup></p>
+<p>The investing workflow should make each role accountable for a narrow deliverable:</p>
+<ol>
+<li><strong>Evidence collector:</strong> collect official filings, announcements, ownership disclosures and corporate actions; resolve issuer identity; record gaps.</li>
+<li><strong>Accounting analyst:</strong> extract units, period, reporting scope and values, then reconcile them with deterministic arithmetic.</li>
+<li><strong>Business analyst:</strong> describe revenue drivers, customer concentration, competitive advantage and reinvestment runway. Separate observations from interpretations.</li>
+<li><strong>Governance reviewer:</strong> flag auditor qualifications, unexplained related-party balances, promoter pledges, dilution and contradictions using filing passages.</li>
+<li><strong>Valuation analyst:</strong> calculate bear/base/bull scenarios and reverse valuation. Show which assumptions drive the range.</li>
+<li><strong>Skeptic:</strong> identify the strongest alternative explanation and conditions that would invalidate the thesis.</li>
+<li><strong>Risk controller:</strong> check data completeness, liquidity, affordability and portfolio exposure.</li>
+<li><strong>Decision recorder:</strong> preserve every eligible, rejected and unresolved case, along with its evidence and future review date.</li>
+</ol>
+<p>These are logical responsibilities, not eight permanent paid AI processes. Collection, arithmetic, eligibility and recording should primarily be code. Several analyses can share one evidence packet, while expensive qualitative review is reserved for a short list.</p>
+<p>Banks and other financial companies need separate templates. Industrial-company free cash flow, working capital and net debt ratios do not map cleanly to banks. Bank research needs asset quality, provisioning, capital adequacy, deposit economics and credit costs; RBI capital and prudential rules provide the relevant primary framework.<sup id="fnref:23"><a class="footnote-ref" href="#fn:23">23</a></sup><sup id="fnref:24"><a class="footnote-ref" href="#fn:24">24</a></sup></p>
+<p>The main governance feed should remain exchange/company disclosures under the current LODR framework. Surveillance, pledges, insolvency and trading restrictions require current checks. A surveillance label warrants review; it is not, by itself, a finding of wrongdoing.<sup id="fnref:21"><a class="footnote-ref" href="#fn:21">21</a></sup><sup id="fnref:22"><a class="footnote-ref" href="#fn:22">22</a></sup></p>
+<h2 id="trading-methods-and-the-initial-experiment-set">Trading methods and the initial experiment set</h2>
+<p>Systematic trading begins with a precise hypothesis, an executable rule and a test designed to disprove it. Persistence and momentum are reasonable initial subjects because their published evidence spans long histories. The trend literature often studies diversified futures with long and short positions, while classic cross-sectional momentum ranks relative winners and losers. Neither directly proves profitability for a few long-only NSE stocks.<sup id="fnref:9"><a class="footnote-ref" href="#fn:9">9</a></sup><sup id="fnref:10"><a class="footnote-ref" href="#fn:10">10</a></sup></p>
+<p>The first implementation should preserve the existing breakout as a baseline after fixing parity. Adding a different 100-day rule during validation would introduce another experiment, not repair the existing one. Register at most three initial families; count every parameter choice and rejected variation.</p>
+<p>Live institutional execution research finds that trading costs vary with characteristics of the trade, stock and time. Its institutional cost estimates should not be transplanted into this account, but the evidence supports explicitly modelling execution conditions rather than assuming frictionless fills.<sup id="fnref:14"><a class="footnote-ref" href="#fn:14">14</a></sup></p>
+<table>
+<thead>
+<tr>
+<th>Experiment</th>
+<th>Frozen initial research definition</th>
+<th>Review frequency</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Existing breakout baseline</td>
+<td>Prior 20-session high, 200-session average, volume filter, 14-session ATR, one agreed stop/target convention and 20-session time exit</td>
+<td>Daily after completed data</td>
+<td>Test the strategy already represented in the product</td>
+</tr>
+<tr>
+<td>Relative momentum</td>
+<td>Rank eligible stocks by return from 12 months ago to one month ago; apply a 200-session trend filter; rebalance monthly</td>
+<td>Monthly</td>
+<td>Test a lower-turnover alternative</td>
+</tr>
+<tr>
+<td>Quality-growth investing</td>
+<td>Sector-appropriate profitability, cash conversion, dilution and financing screens; valuation and evidence gates</td>
+<td>Quarterly and on material filings</td>
+<td>Test a business-based selection process</td>
+</tr>
+</tbody>
+</table>
+<p>Use a historical liquidity-qualified universe broad enough to include failures, with listing-age and data-completeness requirements fixed beforehand. Low nominal price should not be a ranking signal. Initially exclude instruments whose board, lot size, restrictions or liquidity cannot be simulated reliably. Portfolio construction must respect the capital and cost limits even if that means no position.</p>
+<p>Short-term reversal, more breakout lengths, intraday signals and ML are challengers for later cycles. There is no reason to spend the account's limited research budget searching a large strategy zoo before the first three families pass basic integrity checks.</p>
+<p>Prediction accuracy is not the economic objective. In illustrative risk units, winning 40% of trades at 2R and losing 60% at 1R gives 0.2R average profit before costs. Winning 80% at 0.2R but losing 20% at 2R gives a loss of 0.24R. Actual gaps, fills and charges can change either result.</p>
+<p>Retail outcome evidence supports a cautious starting scope. SEBI's cash-equity intraday study found seven out of ten individuals lost money. Its August 2026 derivatives release reports an 87.7% loss rate for FY26 individuals in the studied population. These findings concern intraday cash trading and derivatives, not the proposed swing strategy.<sup id="fnref:15"><a class="footnote-ref" href="#fn:15">15</a></sup><sup id="fnref:16"><a class="footnote-ref" href="#fn:16">16</a></sup> The same derivatives release classifies an entity as algorithmic if it placed at least one algorithmic trade in the year; its aggregate algo-profit figures do not establish that AI agents or retail automation cause profitability.<sup id="fnref2:16"><a class="footnote-ref" href="#fn:16">16</a></sup></p>
+<h2 id="capital-transaction-costs-and-broker-comparison">Capital, transaction costs and broker comparison</h2>
+<p>A research tool needs its own spending ledger. An INR 500 monthly data subscription costs INR 6,000 annually: 60% of the initial INR 10,000, and 25% of the planned INR 2,000 monthly contribution. Those denominators describe expense burden; they are not a calculation of the portfolio's required annual return, because cash arrives over time.</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Research access currently documented</th>
+<th>Resident retail equity-delivery brokerage</th>
+<th>Fit for this project</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Upstox</td>
+<td>Free analytics token valid for one year; supported historical, quote, fundamental and news access</td>
+<td>INR 20 per executed order</td>
+<td>First research-access candidate; fixed delivery brokerage disadvantages small frequent tickets</td>
+</tr>
+<tr>
+<td>Zerodha</td>
+<td>Personal API free without historical/real-time market data; Connect data access INR 500/app/month</td>
+<td>Zero for ordinary resident retail individual delivery accounts</td>
+<td>Execution shortlist; initially avoid paying for a second data feed</td>
+</tr>
+<tr>
+<td>Dhan</td>
+<td>Data API INR 499 plus tax monthly</td>
+<td>Zero delivery brokerage</td>
+<td>Execution shortlist; paid data is unnecessary if another permitted source meets requirements</td>
+</tr>
+</tbody>
+</table>
+<p>The table combines the providers' current API documentation and charges pages.<sup id="fnref:25"><a class="footnote-ref" href="#fn:25">25</a></sup><sup id="fnref:33"><a class="footnote-ref" href="#fn:33">33</a></sup><sup id="fnref:34"><a class="footnote-ref" href="#fn:34">34</a></sup><sup id="fnref:35"><a class="footnote-ref" href="#fn:35">35</a></sup><sup id="fnref:36"><a class="footnote-ref" href="#fn:36">36</a></sup><sup id="fnref:37"><a class="footnote-ref" href="#fn:37">37</a></sup> Zero brokerage does not remove depository charges, taxes, exchange charges, spread or slippage. Account type, account maintenance, BSDA eligibility and special trading arrangements can alter the total bill.</p>
+<p>For an illustrative INR 2,000 delivery purchase and later sale, two INR 20 Upstox orders cost INR 40 in brokerage. Adding 18% GST on that brokerage gives INR 47.20, or 2.36% of the position, before all other charges. That almost consumes an illustrative INR 50 planned trade-risk budget. Use the broker tariff effective on the transaction date and reconcile against contract notes; a constant basis-point fee cannot represent fixed and per-ISIN charges accurately.<sup id="fnref2:33"><a class="footnote-ref" href="#fn:33">33</a></sup></p>
+<p>A broker decision should follow a small acceptance exercise: verify account eligibility, credential renewal, required data coverage, corporate-action handling, tariff calculation and sandbox or manual reconciliation. The provisional choice is Upstox for research evaluation, with Zerodha and Dhan compared for delivery execution. Prefer an existing suitable account where possible; opening multiple accounts solely to combine features may introduce costs, administration and eligibility changes.</p>
+<p>Research-provider choice and execution-broker choice can be separate, but access does not automatically grant cross-provider or public redistribution rights. Retain private research use until the relevant agreements are checked. NSE's data policy makes permitted use and redistribution a contractual question.<sup id="fnref:20"><a class="footnote-ref" href="#fn:20">20</a></sup></p>
+<h3 id="feasibility-before-position-sizing">Feasibility before position sizing</h3>
+<p>Do not force a fixed number of holdings. First estimate the minimum economically viable ticket from fixed round-trip costs and a declared friction budget, then add variable costs and liquidity impact. In the Upstox example above, INR 40 round-trip brokerage plus INR 7.20 GST needs a ticket of at least INR 4,720 merely to keep those charges at 1%, before other charges and market impact. That exceeds a 20% position limit on INR 10,000, so the correct outcome under those constraints is to skip the trade or revisit the broker choice, rather than force deployment.</p>
+<p>For trading, choose the largest whole-share quantity satisfying all of these inequalities:</p>
+<ul>
+<li>Purchase value plus entry charges is within available settled cash.</li>
+<li>Position value is within the portfolio concentration limit.</li>
+<li>Planned loss to the stop, estimated exit charges and slippage are within the risk budget.</li>
+<li>Order value and stressed exit size are feasible in the actual market.</li>
+<li>Expected opportunity remains worthwhile after conservative total costs.</li>
+</ul>
+<p>Because fees are nonlinear, solve the quantity constraint using the tariff function and check the resulting integer, rather than using one percentage-fee formula. A proposed paper default is at most 0.5% of account equity in planned stop risk per new trade and 20% in one position, matching the current app's broad starting settings. These are experimental constraints, not an accepted personal loss tolerance. Stops cannot cap losses during gaps or an inability to sell.</p>
+<p>Long-term investing needs a thesis-downside and concentration budget rather than an arbitrary trading stop. An INR 10,000 account may not support both several viable direct-stock positions and meaningful diversification. Accumulating monthly contributions, retaining cash and using a diversified fund as a separately evaluated alternative are valid outcomes. Never loosen a rule merely to make the dashboard show a purchase.</p>
+<p>Liquidity evaluation should combine actual spread/depth, low-volume days, trading restrictions and stressed exit assumptions. NSE explains that impact cost depends on order size, side and the available order book.<sup id="fnref:19"><a class="footnote-ref" href="#fn:19">19</a></sup> A volume percentage alone is insufficient. Start with conservative order participation limits, then calibrate them against observed depth; lack of reliable execution evidence should block an order.</p>
+<h2 id="data-sources-and-api-contracts">Data sources and API contracts</h2>
+<p>The data layer must answer two questions: what is known now, and what was knowable at a historical decision time? A provider's historical reporting-period labels answer neither publication timing nor the vintage of a restated value by themselves.</p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Preferred source and interface</th>
+<th>Acceptance test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instrument identity</td>
+<td>Exchange security masters plus broker instrument mapping</td>
+<td>ISIN, symbol history, listing/exit dates, board, lot and tick size agree</td>
+</tr>
+<tr>
+<td>Daily prices</td>
+<td>Upstox V3 historical candles; independently sampled official exchange records</td>
+<td>Calendar, timezone, sorting, missing bars, price scale and actions reconcile</td>
+</tr>
+<tr>
+<td>Financial statements</td>
+<td>Official company/exchange filings as authority; Upstox fundamentals as convenience layer</td>
+<td>Consolidated/standalone scope, currency, crore/lakh units and publication dates agree</td>
+</tr>
+<tr>
+<td>Ownership</td>
+<td>Official shareholding/pledge disclosures plus provider history</td>
+<td>Quarter labels do not substitute for publication timestamps</td>
+</tr>
+<tr>
+<td>Corporate actions</td>
+<td>Exchange/company notices and provider action records</td>
+<td>Ex-date, record/payment date, ratio and actual holdings effects reconcile</td>
+</tr>
+<tr>
+<td>News</td>
+<td>Official announcements first; Upstox linked news for discovery</td>
+<td>Original link, publication time, retrieval time, duplicate and correction handling</td>
+</tr>
+<tr>
+<td>Benchmarks</td>
+<td>Licensed/authorized total-return index histories</td>
+<td>Total return rather than price index; calendar and cash-flow dates match</td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>Selected broker's order, trade, funds and position APIs</td>
+<td>State reconciles with broker records and contract notes</td>
+</tr>
+</tbody>
+</table>
+<p>The first adapter contracts should use the following documented endpoints, with credentials held on the server:</p>
+<ul>
+<li>Historical candles: GET https://api.upstox.com/v3/historical-candle/{instrument_key}/{unit}/{interval}/{to_date}/{from_date}.<sup id="fnref2:26"><a class="footnote-ref" href="#fn:26">26</a></sup></li>
+<li>Balance sheet: GET https://api.upstox.com/v2/fundamentals/{isin}/balance-sheet?type=consolidated&amp;fs=true.<sup id="fnref2:27"><a class="footnote-ref" href="#fn:27">27</a></sup></li>
+<li>Ownership: GET https://api.upstox.com/v2/fundamentals/{isin}/share-holdings.<sup id="fnref2:28"><a class="footnote-ref" href="#fn:28">28</a></sup></li>
+<li>Corporate actions: implement against the provider's documented corporate-actions schema and verify event semantics before portfolio use.<sup id="fnref:29"><a class="footnote-ref" href="#fn:29">29</a></sup></li>
+<li>News: GET https://api.upstox.com/v2/news?category=instrument_keys&amp;instrument_keys=...; up to 30 instruments per request, with pagination.<sup id="fnref3:30"><a class="footnote-ref" href="#fn:30">30</a></sup></li>
+</ul>
+<p>Upstox documents daily history availability from January 2000 with at most a decade per request, and minute/hour history from January 2022 with smaller request windows. These are endpoint availability limits, not proof that every listed or delisted stock has complete history.<sup id="fnref:26"><a class="footnote-ref" href="#fn:26">26</a></sup> Start with a coverage audit before promising a multi-decade backtest.</p>
+<p>The balance-sheet endpoint explicitly distinguishes reporting scope and uses crore-denominated monetary fields; its detailed statement is annual. The documented ownership example returns quarterly history. Neither establishes a complete historical archive of values as originally published. Store each retrieval as a new vintage and use original filings for historical eligibility.<sup id="fnref:27"><a class="footnote-ref" href="#fn:27">27</a></sup><sup id="fnref:28"><a class="footnote-ref" href="#fn:28">28</a></sup></p>
+<p>The news endpoint covers only the past seven days. It returns article links and publication timestamps in milliseconds. Therefore it is a useful current digest source, not a historical news dataset for backtesting. Archive permitted metadata and extracted facts prospectively, detect missed collection intervals, and link readers to original articles.<sup id="fnref:30"><a class="footnote-ref" href="#fn:30">30</a></sup></p>
+<p>The analytics token is read-only. Supported public-market GET categories do not need static IP, while private-account GET categories can require it. Do not confuse this with permission to submit orders.<sup id="fnref2:25"><a class="footnote-ref" href="#fn:25">25</a></sup> The adapter should declare capabilities explicitly and reject unsupported operations before making a network request.</p>
+<p>Apply one shared rate limiter per provider/account, including all agents and retries. Upstox's standard API limits include 50 requests/second, 500/minute and 2,000/30 minutes. A conservative backfill budget should stay well below every window, prioritize new daily data and honour backoff.<sup id="fnref:31"><a class="footnote-ref" href="#fn:31">31</a></sup> Save checkpoints so a failed batch resumes without repeating the entire universe.</p>
+<p>NSE offers official historical/EOD products, but paid or licensed data acquisition should follow a demonstrated gap in the inexpensive sources. Public-page availability and a successful request do not establish a stable supported integration or permission to republish data.<sup id="fnref2:20"><a class="footnote-ref" href="#fn:20">20</a></sup><sup id="fnref:51"><a class="footnote-ref" href="#fn:51">51</a></sup></p>
+<h2 id="evidence-storage-and-retrieval">Evidence storage and retrieval</h2>
+<p>Use immutable raw inputs and versioned derived outputs. The essential records are:</p>
+<table>
+<thead>
+<tr>
+<th>Record</th>
+<th>Required fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instrument</td>
+<td>Internal ID, ISIN, exchange symbol, validity interval, board, lot/tick, listing and delisting status</td>
+</tr>
+<tr>
+<td>Source artifact</td>
+<td>Source URL, publisher, publication time, first-seen time, retrieval time, hash, document version, permitted use</td>
+</tr>
+<tr>
+<td>Financial fact</td>
+<td>Issuer, metric, value, unit, currency, period, consolidated/standalone scope, source page/table, original/restated vintage</td>
+</tr>
+<tr>
+<td>Market bar</td>
+<td>Instrument, session, raw OHLCV, completion time, provider, retrieval version and quality flags</td>
+</tr>
+<tr>
+<td>Corporate action</td>
+<td>Instrument, type, announced/ex/record/payment dates, ratio or amount, source and processing state</td>
+</tr>
+<tr>
+<td>Feature snapshot</td>
+<td>Instrument, decision time, feature version, source hashes, training cutoff and missing-value flags</td>
+</tr>
+<tr>
+<td>Research decision</td>
+<td>Evidence snapshot, claims, calculations, scenarios, contrary evidence, status, model/prompt versions and review triggers</td>
+</tr>
+<tr>
+<td>Experiment</td>
+<td>Hypothesis, parameters, universe version, splits, fees, code/environment hashes, attempted variants and results</td>
+</tr>
+<tr>
+<td>Order intent</td>
+<td>Account, strategy version, decision ID, side, quantity, price constraints, expiry and approval scope</td>
+</tr>
+<tr>
+<td>Execution ledger</td>
+<td>Intent ID, broker order ID, state transitions, fills, fees, cash changes and reconciliation status</td>
+</tr>
+</tbody>
+</table>
+<p>Store times in UTC with the Indian exchange session date recorded separately. A financial period ending March 31 must not become usable on March 31 unless the information was actually public then. Later corrections append a vintage rather than overwriting the historical evidence. Current scores should use the most appropriate valid vintage; simulations should use only vintages available at their decision time.</p>
+<p>Freshness rules should depend on the information. Prices need a completed session, news needs publication and collection timestamps, and annual versus quarterly statements need different due-date logic. A universal filing-age threshold cannot tell whether a recently due quarterly result is missing.</p>
+<p>Start document retrieval with issuer, period, document type and section filters plus full-text search. This is easier to audit than embedding the entire universe first. Introduce a vector index only if measured retrieval misses justify it. Keep exact page/table anchors so a reader can verify each numerical and qualitative claim.</p>
+<p>Documents and news are untrusted inputs. They must never supply instructions, tool permissions or new secret destinations to the agent. Keep source extraction separate from execution; validate outbound source domains, file sizes and document types, and prevent retrieved content from altering workflow policy.</p>
+<h2 id="models-machine-learning-and-efficiency">Models, machine learning and efficiency</h2>
+<p>There are two distinct model decisions: models used by development assistants, and models called by the running platform. Luna, Terra medium and Sol medium can divide implementation and review work where available in the development environment. They should not be assumed to be public runtime API identifiers.</p>
+<p>For the platform, use the least expensive method that passes the relevant evaluation:</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Initial method</th>
+<th>Escalation</th>
+<th>Success measure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prices, indicators, accounting arithmetic, costs and sizing</td>
+<td>Deterministic code</td>
+<td>Investigate source or formula conflicts</td>
+<td>Exact reconciliation and reproducibility</td>
+</tr>
+<tr>
+<td>Document classification and field extraction</td>
+<td>Groq gpt-oss-20b with a strict schema</td>
+<td>gpt-oss-120b or human review for difficult evidence</td>
+<td>Correct value, unit, period, scope and passage</td>
+</tr>
+<tr>
+<td>News digest</td>
+<td>Deduplicate first; small model summarizes relevant new events</td>
+<td>Larger model only for material contradictions</td>
+<td>Grounded claims, useful coverage and cost</td>
+</tr>
+<tr>
+<td>Investment synthesis</td>
+<td>Small model over verified evidence</td>
+<td>Larger model for a difficult thesis or contradiction</td>
+<td>Traceability, contrary evidence and calibrated abstention</td>
+</tr>
+<tr>
+<td>Return/risk prediction</td>
+<td>No-ML baseline, then regularized linear model</td>
+<td>LightGBM if it improves held-out economic results</td>
+<td>Net return quality, drawdown, stability and calibration</td>
+</tr>
+<tr>
+<td>Order submission and reconciliation</td>
+<td>Deterministic state machine</td>
+<td>Human attention on unresolved state</td>
+<td>No unapproved or duplicate economic action</td>
+</tr>
+</tbody>
+</table>
+<p>Gu, Kelly and Xiu demonstrate that nonlinear methods can improve return prediction in a large US asset-pricing panel. That does not supply an Indian model, validated features or a small-account return estimate.<sup id="fnref:11"><a class="footnote-ref" href="#fn:11">11</a></sup> LightGBM offers efficient tree learning and ranking objectives, making it a reasonable CPU-based challenger after simpler models.<sup id="fnref:45"><a class="footnote-ref" href="#fn:45">45</a></sup> Begin with lagged momentum, volatility, volume/turnover, market trend and verified accounting features; do not add hundreds of correlated indicators merely because they are available.</p>
+<p>A first ML label can be the next 20-session return relative to a declared benchmark, measured from the next executable entry and accompanied by a cost estimate. Construct labels only after all their future observations exist. Train transformations, missing-value handling, feature selection, calibration and hyperparameters inside training/validation windows. Ranking skill is not sufficient if the portfolio cannot afford the selected shares.</p>
+<p>Use a fixed, small search budget, such as a maximum of 20 fully recorded configurations in the initial ML cycle. Compare an elastic-net baseline with shallow, regularized boosted trees and early stopping. Retrain on a scheduled research cycle, not on every new headline. Freeze the selected model during a forward evaluation period.</p>
+<h3 id="groq-routing-and-cost">Groq routing and cost</h3>
+<p>The current Groq page lists gpt-oss-20b at USD 0.075 per million input tokens and USD 0.30 per million output tokens; gpt-oss-120b is USD 0.15 and USD 0.60 respectively.<sup id="fnref:39"><a class="footnote-ref" href="#fn:39">39</a></sup> For an illustrative call using 8,000 input and 1,000 billed output tokens, those rates give USD 0.0009 and USD 0.0018. Three small-model calls plus one large-model call would therefore cost USD 0.0045, or USD 0.45 for 100 such reports. Actual token use, reasoning output, retries, taxes and other services can change that estimate.</p>
+<p>Provider tokens-per-second figures do not measure document download, retrieval, queueing, reasoning, validation or end-to-end quality. Record measured p50/p95 latency and invoice-compatible usage per task. A larger model should be promoted only if its improvement on the local evaluation set justifies the extra latency and cost.</p>
+<p>Groq supports strict JSON-schema output for both selected models. The documented strict mode requires all properties to be required and disallows additional properties; structured output currently does not combine with streaming or tool use.<sup id="fnref:40"><a class="footnote-ref" href="#fn:40">40</a></sup> Fetch evidence first, then make a bounded extraction call. Continue local schema and semantic validation: valid JSON can still contain an incorrect fact.</p>
+<p>Cache by source hash, issuer/period/scope, task, schema version, prompt version and model version. Do not cache a live risk decision across changed prices or positions. Use one synthesis after parallel independent analyses, rather than repeated agents rewriting the same conclusion. Route material conflicts to a larger model once, then return unresolved evidence if the conflict persists.</p>
+<p>Groq's batch service offers a 50% discount with completion windows from 24 hours to seven days. It fits historical extraction and offline evaluations, not time-sensitive trading or a fresh daily digest.<sup id="fnref:41"><a class="footnote-ref" href="#fn:41">41</a></sup> A proposed initial incremental R&amp;D target is INR 0–200 monthly, separately tracked from invested capital. It is a budget policy, not a service quote or promise that all hosting/data costs fit within it.</p>
+<h3 id="hardware-and-scheduling">Hardware and scheduling</h3>
+<p>The inspected computer has an Intel Core i7-8650U, four physical cores/eight logical processors, approximately 15.8 GiB RAM and Intel UHD 620 graphics. No discrete GPU was observed. Use it for daily-data research, extraction preparation and modest linear/tree experiments; use hosted inference for language tasks. A GPU purchase is not justified by any measured bottleneck yet.</p>
+<p>An illustrative 500-stock, ten-year daily dataset contains about 500 × 252 × 10 = 1.26 million bars before listing gaps. One year of one-minute bars at 375 minutes/session would contain about 47.25 million rows. Neither count represents independent training examples. Daily-first research reduces collection, storage, operational and validation demands.</p>
+<p>Start with at most two concurrent CPU jobs and a total thread budget that leaves the machine usable; profile memory before increasing it. Limit concurrent LLM calls and enforce the account's real token/request quotas. Keep long downloads and training outside interactive website requests.</p>
+<table>
+<thead>
+<tr>
+<th>Benchmark target, not a measured result</th>
+<th>Initial budget</th>
+<th>Measurement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cached dashboard read</td>
+<td>p95 under 1 second</td>
+<td>Server and browser timings</td>
+</tr>
+<tr>
+<td>Daily feature calculation for 500 symbols already on disk</td>
+<td>Under 60 seconds</td>
+<td>Wall time, peak memory, missing-feature count</td>
+</tr>
+<tr>
+<td>Standard company evidence synthesis</td>
+<td>p95 under 120 seconds</td>
+<td>Retrieval plus all calls and validation</td>
+</tr>
+<tr>
+<td>Small-model extraction call</td>
+<td>p95 under 30 seconds</td>
+<td>End-to-end request timing, including failures</td>
+</tr>
+<tr>
+<td>Initial bounded ML experiment cycle</td>
+<td>Under 30 minutes on local CPU</td>
+<td>Full cross-validation/training cost and memory</td>
+</tr>
+<tr>
+<td>Daily paper reconciliation</td>
+<td>Complete before the next actionable session</td>
+<td>Data freshness, unresolved-state count and job completion</td>
+</tr>
+</tbody>
+</table>
+<p>If a target fails, profile the bottleneck before changing models or infrastructure. None of these targets is a production service-level guarantee.</p>
+<h2 id="benchmarks-and-promotion-gates">Benchmarks and promotion gates</h2>
+<p>There are three evaluation layers. A better language model does not imply a better trading strategy, and a profitable historical strategy does not imply a reliable execution system.</p>
+<h3 id="document-and-reasoning-quality">Document and reasoning quality</h3>
+<p>Create a local gold set of approximately 200 Indian filing questions plus 50 adversarial, contradictory or insufficient-evidence cases. Include crore/lakh conversions, per-share metrics, consolidated versus standalone reports, negative numbers, restatements, bank-specific measures and missing periods. Separate development and held-out cases by issuer and reporting period where practical.</p>
+<p>FinQA provides a useful format for financial numerical reasoning with supporting evidence and calculations; FinanceBench provides a useful financial question-answering evaluation pattern. Their published datasets and historical model results do not establish performance on the project's current models or Indian filings.<sup id="fnref:48"><a class="footnote-ref" href="#fn:48">48</a></sup><sup id="fnref:49"><a class="footnote-ref" href="#fn:49">49</a></sup></p>
+<p>Proposed release criteria are zero critical unit, currency or period errors on the held-out critical subset; zero invented source IDs; at least 95% supported-claim precision on adjudicated claims; and a separately measured abstention rate on unanswerable questions. Report sample counts and uncertainty, not only percentages. Failing critical evidence cases should block that task category or route it to review.</p>
+<p>Measure extraction accuracy, retrieval recall, citation entailment and numeric correctness separately. A citation is only a pointer; entailment asks whether the cited passage actually supports the claim. Agent agreement is not independent evidence when agents share the same model and inputs.</p>
+<h3 id="strategy-validation">Strategy validation</h3>
+<p>Use one portfolio simulator with matching contribution dates for strategies and benchmarks. Report time-weighted returns for strategy comparison and money-weighted return/XIRR for the personal capital experience. Deposits must not be counted as profit. Include idle cash, distributions, whole shares, all explicit charges and realistic fills.</p>
+<p>Compare against cash, a broad Indian total-return benchmark and a universe-appropriate small-cap benchmark when testing small caps. Distinguish the theoretical index from an investable fund/ETF implementation with expenses, tracking differences and trading costs. Include a cash-exposure-matched comparison as a diagnostic, rather than silently changing the primary benchmark after results arrive.</p>
+<p>A practical first design is expanding chronological training, a subsequent validation block and an untouched test block, repeated forward. For a sufficiently long dataset, start with five years training, one year validation and one year test; shorten only with an explicit loss-of-confidence note. Seek several market regimes and multiple years of aggregate out-of-sample evidence. Keep a final block unseen until the specification is frozen. Reopening it turns it into development data.</p>
+<p>Split the entire stock panel by date, not random rows. Purge training labels whose future outcome interval overlaps validation/test intervals. Add an embargo where residual leakage/dependence warrants it; an arbitrary gap is not a substitute for understanding the label interval. The ordinary TimeSeriesSplit tool supports chronology and a gap, but it does not automatically implement panel-aware purging or point-in-time fundamentals.<sup id="fnref:46"><a class="footnote-ref" href="#fn:46">46</a></sup></p>
+<p>Track rank correlation, top-ranked selection outcomes, calibration and economic results. Brier score and log loss evaluate probabilistic predictions but mix more than calibration alone; also inspect reliability diagrams and performance by market regime.<sup id="fnref:47"><a class="footnote-ref" href="#fn:47">47</a></sup> Do not display an LLM's self-reported confidence as a probability of profit.</p>
+<p>For economic promotion, require positive net excess results across aggregate out-of-sample periods, tolerable drawdowns under a predeclared mandate and no dependence on a single stock, year or favourable cost assumption. Stress twice estimated spread/slippage, missing fills, delayed entry, lower trading volume and removal of the best period. Examine sensitivity around parameter choices rather than celebrating a narrow optimum.</p>
+<p>The Deflated Sharpe Ratio and Probability of Backtest Overfitting help assess selection effects, non-normality and the instability of selected winners.<sup id="fnref:12"><a class="footnote-ref" href="#fn:12">12</a></sup><sup id="fnref:13"><a class="footnote-ref" href="#fn:13">13</a></sup> Report their assumptions and the full trial count. Thresholds such as 95% DSR probability or PBO below 20% can be preregistered diagnostics, but they are not universal approval certificates, especially with few correlated observations. Bootstrap date blocks and assess sector/time dependence instead of treating every stock-day or trade as independent.</p>
+<p>A hundred completed positions is a useful sample-size warning threshold, not proof of an edge. A short strategy history, a survivor-only universe or unknown filing vintages can make an attractive statistic unusable. When valid historical data are unavailable, label the result exploratory and begin a prospective record rather than fabricating precision.</p>
+<h3 id="historical-ai-leakage">Historical AI leakage</h3>
+<p>A modern language model may already know later scandals, delistings, business outcomes and stock winners. Supplying an old report does not remove that knowledge from its parameters. Even issuer anonymization and an advertised training cutoff do not prove that a historical qualitative recommendation was genuinely out of sample.</p>
+<p>Backtest deterministic features, accounting formulas, mechanical valuation rules and portfolio policies using point-in-time evidence. Test LLM extraction against historical documents for clerical accuracy. Validate qualitative moat assessments, governance judgments and discretionary AI selection prospectively through frozen models/prompts, timestamped inputs, outputs, rejections and shadow portfolios. Do not attribute historical returns to present-day narrative intelligence.</p>
+<h3 id="execution-and-forward-evaluation">Execution and forward evaluation</h3>
+<p>Use sandbox testing for protocol correctness. Upstox's sandbox has separate tokens and supported APIs; it does not establish real-market fill quality or strategy profitability.<sup id="fnref:32"><a class="footnote-ref" href="#fn:32">32</a></sup> Then run the frozen strategy in paper mode through actual collection times, missed data, holidays and model/provider failures.</p>
+<p>A first 8–12-week paper period can expose operational defects. A six-to-twelve-month record gives a broader operational sample, but cannot validate a multiyear investment thesis or establish excess return by itself. Promotion depends on evidence sufficiency, not a calendar promise.</p>
+<p>Required failure tests include repeated job delivery, timeouts after order submission, duplicate/out-of-order callbacks, partial fills, rejected orders, expired credentials, market gaps, stale prices, incorrect corporate actions, clock/timezone errors and unavailable funds. Each unresolved order or reconciliation discrepancy must block new exposure until understood. Keep simulated, sandbox and live P&amp;L visibly separate.</p>
+<h2 id="architecture-and-agent-communication">Architecture and agent communication</h2>
+<p>Reuse the current platform rather than introducing a second dashboard. Treat the Site as the private control and reporting surface, the Python worker as the research engine, and a future broker adapter as a separately permissioned execution component.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Initial implementation</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Momentum Site</td>
+<td>Existing React/Vinext application and authenticated server routes</td>
+<td>Budget, watchlist, evidence reports, jobs, experiment results and paper ledger</td>
+</tr>
+<tr>
+<td>Control database</td>
+<td>Existing D1 for account-scoped job metadata and dashboard projections</td>
+<td>Durable status, settings, run references and access control</td>
+</tr>
+<tr>
+<td>Research worker</td>
+<td>Existing Python package extended with a bounded job runner</td>
+<td>Collect, normalize, calculate, evaluate and publish results</td>
+</tr>
+<tr>
+<td>Research storage</td>
+<td>Versioned Parquet/files plus DuckDB for analysis; local SQLite job/run metadata where needed</td>
+<td>Reproducible inputs, research queries and resumable local work</td>
+</tr>
+<tr>
+<td>AI adapter</td>
+<td>Existing Groq integration with typed output, validation, cache and budgets</td>
+<td>Bounded evidence tasks</td>
+</tr>
+<tr>
+<td>Paper engine</td>
+<td>One authoritative strategy/state definition shared with historical replay</td>
+<td>Simulated orders, holdings, fees and diagnostics</td>
+</tr>
+<tr>
+<td>Future live gateway</td>
+<td>Broker-approved authentication and required network controls</td>
+<td>Revalidate approved intent, submit once, reconcile and monitor</td>
+</tr>
+</tbody>
+</table>
+<p>Choose one authoritative store for each record. D1 owns Site job/control state; immutable research snapshots own input evidence; the execution ledger owns intent/fill state. Do not write the same mutable portfolio independently into D1, SQLite and another cloud database. Any existing alternative store should be evaluated for reuse or migration before adding another service.</p>
+<p>For local research, the worker can make authenticated outbound HTTPS requests to claim jobs and publish results. This avoids exposing a listening port on the personal computer. Use expiring leases, heartbeat timestamps, content hashes and authenticated callback requests. Worker credentials must be scoped to the relevant jobs/account; sign requests with expiry and nonce/replay protection if using a custom callback protocol.</p>
+<p>The machine sleeping or disconnecting should leave a visible stale/offline status, not an apparently healthy automation. An unattended live executor would need independent uptime and, where required, a stable whitelisted egress IP. Do not assume the hosted Site supplies that network property. Obtain an actual deployment quote only after a live gateway is justified.</p>
+<p>A job envelope should include run_id, parent_run_id, account_id, job_type, schema_version, idempotency_key, as_of, input_snapshot_hash, strategy_version, budget, attempt, lease_until and trace_id. Outputs should include status, evidence_refs, metrics, unresolved_items, timestamps and artifact_hash. The status vocabulary should distinguish queued, running, needs_data, needs_review, succeeded, failed and cancelled.</p>
+<p>Agent communication should pass these records through the orchestrator. An investing analyst can request missing evidence; a trading researcher can request an approved backtest specification. Neither can change the global risk policy, increase its own budget or invoke an order tool. Disagreement should create a review item with conflicting passages or calculations, rather than a vote that hides the uncertainty.</p>
+<p>The orchestrator deduplicates collection, shares frozen inputs, runs independent analyses concurrently, validates outputs and records one decision. Use dependency-aware scheduling: collect before extraction, reconcile facts before valuation, and freeze decisions before execution. Audit traces should contain operational events and concise rationales, not hidden reasoning transcripts.</p>
+<h3 id="framework-decision">Framework decision</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Appropriate use</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plain typed Python functions plus durable jobs</td>
+<td>Small fixed workflow with clear inputs and outputs</td>
+<td>Start here; lowest integration burden</td>
+</tr>
+<tr>
+<td>LangChain</td>
+<td>Standard model/tool integration and agent abstractions</td>
+<td>Adopt a component only when it replaces code the project actually needs</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>Explicit state transitions, parallel branches, checkpoints and human review</td>
+<td>Add when the growing workflow needs durable pause/resume and inspection</td>
+</tr>
+<tr>
+<td>Multiple-agent debate framework</td>
+<td>Open-ended agent conversations</td>
+<td>No initial requirement; measure benefit before adding cost</td>
+</tr>
+<tr>
+<td>Provider routing proxy</td>
+<td>Multiple hosts, fallback policies and shared budgets</td>
+<td>Defer while one Groq adapter is sufficient</td>
+</tr>
+</tbody>
+</table>
+<p>LangChain's current agent abstraction builds on LangGraph; it need not be a mandatory dependency for every model call. LangGraph distinguishes fixed workflows from dynamic agents and supports persistence through checkpointers.<sup id="fnref:42"><a class="footnote-ref" href="#fn:42">42</a></sup><sup id="fnref:43"><a class="footnote-ref" href="#fn:43">43</a></sup><sup id="fnref:52"><a class="footnote-ref" href="#fn:52">52</a></sup> For this product, a bounded graph is easier to review than a general agent deciding which financial tools to call next.</p>
+<p>If LangGraph is introduced, select a persistent store appropriate to deployment and back it up. An in-memory saver is not durable across process loss. Interrupt/resume can restart a node from its beginning; therefore never place an external order before a review interrupt and assume it will not execute again.<sup id="fnref2:43"><a class="footnote-ref" href="#fn:43">43</a></sup><sup id="fnref:44"><a class="footnote-ref" href="#fn:44">44</a></sup></p>
+<p>Use an outbox and an explicit order state machine: draft, approved, submitting, acknowledged, partially_filled, filled, cancelled, rejected or unknown. Persist intent before calling the broker. After an ambiguous submission timeout, query/reconcile broker state before retrying. A local idempotency key alone cannot guarantee exactly-once broker execution.</p>
+<p>Approval must be bound to account, strategy/version, side, maximum quantity, price bounds and expiry. Any changed proposal needs a new valid approval scope. Before submission, recheck funds, exposure, market state, order type and freshness. A kill switch blocks new submissions and requests cancellation where possible; it cannot guarantee liquidation during a halt or lower circuit.</p>
+<h2 id="india-execution-requirements">India execution requirements</h2>
+<p>SEBI's February 2025 retail-algo framework establishes broker-controlled API access, tagging and authentication/network requirements, with registration conditions tied to the specified order-rate threshold. The September 2025 extension makes the framework and exchange modalities applicable to all brokers from April 1, 2026.<sup id="fnref:17"><a class="footnote-ref" href="#fn:17">17</a></sup><sup id="fnref:18"><a class="footnote-ref" href="#fn:18">18</a></sup> Being below a registration threshold does not make an API order exempt from all controls.</p>
+<p>Before implementing live routing, verify the selected broker's current onboarding, permitted order types, tagging, static-IP workflow, authentication renewal and account-specific limits against the latest exchange/broker requirements. Keep research-only credentials separate from trade-enabled credentials. A read-only analytics token must never be upgraded implicitly.</p>
+<p>Broker sessions are another operational constraint. Kite documents expiry of its ordinary access token at 6 AM the next day, as well as earlier invalidation conditions.<sup id="fnref:38"><a class="footnote-ref" href="#fn:38">38</a></sup> Authentication expiry must produce a visible inactive state and prevent new exposure. The architecture should not imply permanently unattended access where the broker requires periodic login.</p>
+<p>No strategy, account or order authority is enabled by this blueprint. The first live stage, if later authorized and justified, should have a small defined capital limit, manual review, daily reconciliation and a tested broker-app fallback. Trading capital allocation requires both validated results and a defined personal loss budget; selecting the best backtest alone is insufficient.</p>
+<h2 id="dashboard-and-news-digestion">Dashboard and news digestion</h2>
+<p>Keep investing and trading visible as separate mandates with shared cash and exposure. The dashboard should explain why a candidate is eligible, blocked or awaiting evidence in ordinary language.</p>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Information to show</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overview</td>
+<td>Contributions, cash, holdings value, realized/unrealized P&amp;L, costs, drawdown, data freshness and mode</td>
+</tr>
+<tr>
+<td>Investing</td>
+<td>Thesis, valuation range, financial trends, governance flags, source passages, contrary evidence and next review</td>
+</tr>
+<tr>
+<td>Trading laboratory</td>
+<td>Frozen strategy version, sample dates, benchmark, costs, trade count, uncertainty and out-of-sample results</td>
+</tr>
+<tr>
+<td>Paper portfolio</td>
+<td>Signals, intended orders, accepted/skipped trades, actual collection time, simulated fills and reconciliation</td>
+</tr>
+<tr>
+<td>News digest</td>
+<td>What happened, affected issuer, supporting source, publication time, implication, uncertainty and follow-up</td>
+</tr>
+<tr>
+<td>Agent activity</td>
+<td>Current job, last successful run, blocked inputs, model spending and result link</td>
+</tr>
+</tbody>
+</table>
+<p>The default news workflow is event-driven collection plus a scheduled digest after the relevant market data are complete. Fetch only watchlist/holding-relevant material first, deduplicate by URL and content, identify the issuer, classify the event and attach the primary announcement where available. Write a short summary with a link and a separately labeled interpretation. Do not turn positive sentiment into an order.</p>
+<p>For a material event such as an auditor resignation or financing announcement, the digest should request a fresh thesis/risk review. A summary alone should not overwrite the verified financial record. Record corrections and show when a source window was missed. The seven-day Upstox news limit makes reliable collection cadence particularly important.<sup id="fnref2:30"><a class="footnote-ref" href="#fn:30">30</a></sup></p>
+<p>Integrate through authenticated server routes and account-scoped result records, not browser-held broker keys. Keep private holdings and licensed market content behind authentication. A future public Momentum page could show permitted original summaries and source links without exposing account data or redistributing a full third-party feed.</p>
+<h2 id="technical-implementation-sequence">Technical implementation sequence</h2>
+<p>The following is an ordered backlog. File names in this table are proposed additions unless explicitly described as existing. Delivery estimates concern engineering work only; obtaining valid historical data and accumulating forward evidence can take much longer.</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Work package</th>
+<th>Concrete deliverable</th>
+<th>Acceptance evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0</td>
+<td>Establish one strategy definition</td>
+<td>Versioned specification; align existing finance-core.ts, finance-paper.ts and signal construction; retain shared replay fixtures</td>
+<td>Identical signals, stops, sizing, entries and exits for the same event sequence; documented end-of-test liquidation differences</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>Verify current integrated platform</td>
+<td>Review latest changes, run appropriate checks and controlled local/hosted smoke tests</td>
+<td>Recorded build/test outcome; explicit remaining failures; no inferred deployment success</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Add read-only provider adapter</td>
+<td>providers/upstox.py, capability/auth configuration, instrument mapping, rate limiter and resumable collection</td>
+<td>Small sample reconciled against official records; missing/delisted coverage audit; no order permission</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Version evidence</td>
+<td>Evidence-vintage schema, corporate-action ledger and raw/derived price separation</td>
+<td>Correct replay around publication, restatement, split, bonus and dividend dates</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Build portfolio research engine</td>
+<td>research/simulator.py, broker_tariffs.py, benchmark and contribution ledger</td>
+<td>Cash/holdings invariants, whole-share feasibility, dated costs and matched benchmark cash flows</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Freeze experiment registry</td>
+<td>experiments/*.yaml, trial ledger, date-grouped splits and reproducibility manifest</td>
+<td>No random panel split; overlap-purge tests; rejected variants retained</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Harden model workflow</td>
+<td>Strict schemas, passage verification, usage log, caching, timeouts and escalation limits in the existing provider flow</td>
+<td>Indian filing gold-set results with error categories, costs and latency</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Add durable research jobs and digest</td>
+<td>jobs/worker.py, authenticated job routes and source-linked digest results</td>
+<td>Restart/resume without duplicate records; stale/offline state; account isolation</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Evaluate ML challengers</td>
+<td>models/baselines.py, models/boosting.py and a reproducible evaluation command</td>
+<td>Linear/boosting/no-ML comparison on identical data/splits/costs; no promotion on training scores</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Operate prospective paper program</td>
+<td>Frozen model/strategy versions and daily execution journal</td>
+<td>Reconciliation, rejected/missed decision records, fault drills and qualified performance report</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Build optional execution adapter</td>
+<td>Approved broker gateway, intent/outbox ledger, reconciliation and emergency controls</td>
+<td>Current broker requirements met; explicit activation; tiny constrained trial only after evidence gates</td>
+</tr>
+</tbody>
+</table>
+<p>P0–P1 can be planned as several focused engineering sessions; P2–P4 are likely multiple iterations driven by data defects and validation results. P5 takes calendar time that cannot be compressed by using more agents. No completion date or investment performance should be inferred from these estimates.</p>
+<p>For implementation delegation, use Luna for bounded adapters, fixtures and straightforward UI wiring; Terra medium for simulator, data-model and worker integration; Sol medium for methodological review, broker-contract checks and evaluation interpretation. The orchestrator owns acceptance criteria, shared contracts and cross-component review. Use disjoint file ownership and a single integration path; do not have two agents independently rewrite the authoritative execution engine.</p>
+<p>The first concrete deliverable should be the parity repair plus a read-only data coverage report. The next should be a contribution-aware, broker-cost-aware comparison of the frozen strategies. Only then can the dashboard responsibly answer whether direct investing, trading, a diversified benchmark or holding cash was the most effective use of the tested capital under the declared assumptions.</p>
+<h2 id="unresolved-evidence-and-decision-limits">Unresolved evidence and decision limits</h2>
+<p>The principal unknowns are the selected broker/account, the coverage and licensing of point-in-time Indian histories, valid runtime credentials, actual local model/latency measurements and the personal loss tolerance for live capital. None prevents building the research system; each affects later claims or execution.</p>
+<p>No stock has been selected by this report. No projected CAGR, monthly income, win rate or ML accuracy is asserted. The platform has not yet demonstrated a repeatable edge after all costs. A useful system must be willing to reject an attractive story, an overfit strategy and an unaffordable transaction.</p>
+<p>The recommended design creates a traceable path from evidence to experiments to decisions. Its near-term value is better research, fewer unsupported decisions and an honest performance record. Profitable deployment remains a hypothesis to test.</p>
+<h2 id="sources">Sources</h2>
+<p>Numbered references identify the exact primary pages or documents used. Undated live documentation and pricing pages were checked on 11 September 2026. Historical papers describe their original populations and methods; technical design choices and targets in this report are recommendations, not claims from those papers.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Warren E. Buffett. <a href="https://www.berkshirehathaway.com/1996ar/manual.html">An Owner's Manual</a>. June 1996.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Warren E. Buffett. <a href="https://www.berkshirehathaway.com/letters/2007ltr.pdf">Berkshire Hathaway 2007 Shareholder Letter</a>. 29 February 2008.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Peter Lynch and Christopher Kuiper / Fidelity. <a href="https://www.fidelity.com/bin-public/060_www_fidelity_com/documents/learning-center/110322%20rewards%20exclusive_UnderstandtheChange-Transcript_%20F.pdf">Understanding the Changing World of Investing, webcast transcript</a>. 3 November 2022.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Howard Marks / Oaktree. <a href="https://www.oaktreecapital.com/insights/memo/the-illusion-of-knowledge">The Illusion of Knowledge</a>. 8 September 2022.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Howard Marks / Oaktree. <a href="https://www.oaktreecapital.com/insights/memo/what-really-matters">What Really Matters?</a>. 22 November 2022.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Robert Novy-Marx / NBER. <a href="https://www.nber.org/papers/w15940">The Other Side of Value: Good Growth and the Gross Profitability Premium, Working Paper 15940</a>. April 2010.&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:7">
+<p>Clifford S. Asness, Andrea Frazzini and Lasse H. Pedersen. <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2312432">Quality Minus Junk</a>. 5 June 2017 paper version.&#160;<a class="footnote-backref" href="#fnref:7" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:8">
+<p>Juhani T. Linnainmaa and Michael R. Roberts / NBER. <a href="https://www.nber.org/papers/w22894">The History of the Cross Section of Stock Returns, Working Paper 22894</a>. December 2016.&#160;<a class="footnote-backref" href="#fnref:8" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:9">
+<p>Brian K. Hurst, Yao Hua Ooi and Lasse H. Pedersen / AQR. <a href="https://www.aqr.com/insights/research/journal-article/a-century-of-evidence-on-trend-following-investing">A Century of Evidence on Trend-Following Investing</a>. 31 October 2017.&#160;<a class="footnote-backref" href="#fnref:9" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+<li id="fn:10">
+<p>Narasimhan Jegadeesh and Sheridan Titman. <a href="https://doi.org/10.1111/j.1540-6261.1993.tb04702.x">Returns to Buying Winners and Selling Losers: Implications for Stock Market Efficiency</a>. March 1993.&#160;<a class="footnote-backref" href="#fnref:10" title="Jump back to footnote 10 in the text">&#8617;</a></p>
+</li>
+<li id="fn:11">
+<p>Shihao Gu, Bryan Kelly and Dacheng Xiu. <a href="https://academic.oup.com/rfs/article/33/5/2223/5758276">Empirical Asset Pricing via Machine Learning</a>. May 2020.&#160;<a class="footnote-backref" href="#fnref:11" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+</li>
+<li id="fn:12">
+<p>David H. Bailey and Marcos Lopez de Prado. <a href="https://doi.org/10.2139/ssrn.2460551">The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality</a>. 31 July 2014.&#160;<a class="footnote-backref" href="#fnref:12" title="Jump back to footnote 12 in the text">&#8617;</a></p>
+</li>
+<li id="fn:13">
+<p>David H. Bailey, Jonathan M. Borwein, Marcos Lopez de Prado and Qiji Jim Zhu. <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253">The Probability of Backtest Overfitting</a>. 27 February 2015 version; published 2017.&#160;<a class="footnote-backref" href="#fnref:13" title="Jump back to footnote 13 in the text">&#8617;</a></p>
+</li>
+<li id="fn:14">
+<p>Andrea Frazzini, Ronen Israel and Tobias J. Moskowitz / AQR. <a href="https://www.aqr.com/insights/research/working-paper/trading-costs">Trading Costs</a>. 23 August 2018.&#160;<a class="footnote-backref" href="#fnref:14" title="Jump back to footnote 14 in the text">&#8617;</a></p>
+</li>
+<li id="fn:15">
+<p>SEBI. <a href="https://www.sebi.gov.in/reports-and-statistics/research/jul-2024/study-analysis-of-intraday-trading-by-individuals-in-equity-cash-segment_84946.html">Study: Analysis of Intraday Trading by Individuals in Equity Cash Segment</a>. 24 July 2024.&#160;<a class="footnote-backref" href="#fnref:15" title="Jump back to footnote 15 in the text">&#8617;</a></p>
+</li>
+<li id="fn:16">
+<p>SEBI. <a href="https://www.sebi.gov.in/sebi_data/attachdocs/aug-2026/1787236407005.pdf">Studies Indicate Key Trends in Retail Participation, Trading Behaviour and Profitability in the Equity Derivatives, PR 50/2026</a>. 20 August 2026, pp. 1–3.&#160;<a class="footnote-backref" href="#fnref:16" title="Jump back to footnote 16 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:16" title="Jump back to footnote 16 in the text">&#8617;</a></p>
+</li>
+<li id="fn:17">
+<p>SEBI. <a href="https://www.sebi.gov.in/sebi_data/attachdocs/feb-2025/1738665456458.pdf">Safer Participation of Retail Investors in Algorithmic Trading</a>. 4 February 2025.&#160;<a class="footnote-backref" href="#fnref:17" title="Jump back to footnote 17 in the text">&#8617;</a></p>
+</li>
+<li id="fn:18">
+<p>SEBI. <a href="https://www.sebi.gov.in/sebi_data/attachdocs/sep-2025/1759232056254.pdf">Extension of Timeline for Implementation of the Retail Algorithmic-Trading Circular</a>. 30 September 2025, paragraph 8.&#160;<a class="footnote-backref" href="#fnref:18" title="Jump back to footnote 18 in the text">&#8617;</a></p>
+</li>
+<li id="fn:19">
+<p>NSE. <a href="https://www.nseindia.com/static/products-services/indices-impact-cost">Impact Cost</a>. Updated 6 January 2023.&#160;<a class="footnote-backref" href="#fnref:19" title="Jump back to footnote 19 in the text">&#8617;</a></p>
+</li>
+<li id="fn:20">
+<p>NSE. <a href="https://www.nseindia.com/static/market-data/nse-data-policy">Data Usage and Sharing Policy</a>. Live policy page.&#160;<a class="footnote-backref" href="#fnref:20" title="Jump back to footnote 20 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:20" title="Jump back to footnote 20 in the text">&#8617;</a></p>
+</li>
+<li id="fn:21">
+<p>SEBI. <a href="https://www.sebi.gov.in/legal/master-circulars/jan-2026/master-circular-for-compliance-with-the-provisions-of-the-securities-and-exchange-board-of-india-listing-obligations-and-disclosure-requirements-regulations-2015-by-listed-entities_99432.html">Master Circular for Compliance with LODR Regulations by Listed Entities</a>. 30 January 2026.&#160;<a class="footnote-backref" href="#fnref:21" title="Jump back to footnote 21 in the text">&#8617;</a></p>
+</li>
+<li id="fn:22">
+<p>SEBI. <a href="https://www.sebi.gov.in/curation/surviellance.html">Surveillance Measures</a>. Live reference page.&#160;<a class="footnote-backref" href="#fnref:22" title="Jump back to footnote 22 in the text">&#8617;</a></p>
+</li>
+<li id="fn:23">
+<p>RBI. <a href="https://www.rbi.org.in/Scripts/BS_ViewMasterCirculars.aspx?Id=12815">Master Circular: Basel III Capital Regulations</a>. 1 April 2025.&#160;<a class="footnote-backref" href="#fnref:23" title="Jump back to footnote 23 in the text">&#8617;</a></p>
+</li>
+<li id="fn:24">
+<p>RBI. <a href="https://rbi.org.in/scripts/NotificationUser.aspx?Id=12822">Prudential Norms on Income Recognition, Asset Classification and Provisioning Pertaining to Advances</a>. 1 April 2025.&#160;<a class="footnote-backref" href="#fnref:24" title="Jump back to footnote 24 in the text">&#8617;</a></p>
+</li>
+<li id="fn:25">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/analytics-token/">Analytics Token</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:25" title="Jump back to footnote 25 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:25" title="Jump back to footnote 25 in the text">&#8617;</a></p>
+</li>
+<li id="fn:26">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/v3/get-historical-candle-data/">Get Historical Candle Data V3</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:26" title="Jump back to footnote 26 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:26" title="Jump back to footnote 26 in the text">&#8617;</a></p>
+</li>
+<li id="fn:27">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/get-balance-sheet/">Balance Sheet API</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:27" title="Jump back to footnote 27 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:27" title="Jump back to footnote 27 in the text">&#8617;</a></p>
+</li>
+<li id="fn:28">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/get-share-holdings/">Share Holdings API</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:28" title="Jump back to footnote 28 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:28" title="Jump back to footnote 28 in the text">&#8617;</a></p>
+</li>
+<li id="fn:29">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/get-corporate-actions/">Corporate Actions API</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:29" title="Jump back to footnote 29 in the text">&#8617;</a></p>
+</li>
+<li id="fn:30">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/get-news/">Get News</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:30" title="Jump back to footnote 30 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:30" title="Jump back to footnote 30 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:30" title="Jump back to footnote 30 in the text">&#8617;</a></p>
+</li>
+<li id="fn:31">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/rate-limiting/">Rate Limiting</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:31" title="Jump back to footnote 31 in the text">&#8617;</a></p>
+</li>
+<li id="fn:32">
+<p>Upstox. <a href="https://upstox.com/developer/api-documentation/sandbox/">Sandbox</a>. Live developer documentation.&#160;<a class="footnote-backref" href="#fnref:32" title="Jump back to footnote 32 in the text">&#8617;</a></p>
+</li>
+<li id="fn:33">
+<p>Upstox. <a href="https://upstox.com/brokerage-charges/">Brokerage Charges</a>. Current published tariff.&#160;<a class="footnote-backref" href="#fnref:33" title="Jump back to footnote 33 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:33" title="Jump back to footnote 33 in the text">&#8617;</a></p>
+</li>
+<li id="fn:34">
+<p>Zerodha. <a href="https://support.zerodha.com/category/trading-and-markets/general-kite/kite-api/articles/what-are-the-charges-for-kite-apis">What Are the Charges for Kite APIs?</a>. Current support page.&#160;<a class="footnote-backref" href="#fnref:34" title="Jump back to footnote 34 in the text">&#8617;</a></p>
+</li>
+<li id="fn:35">
+<p>Zerodha. <a href="https://zerodha.com/charges/">Charges</a>. Current published tariff.&#160;<a class="footnote-backref" href="#fnref:35" title="Jump back to footnote 35 in the text">&#8617;</a></p>
+</li>
+<li id="fn:36">
+<p>Dhan. <a href="https://dhan.co/support/platforms/dhanhq-api/how-to-access-dhan-api/">How to Access Dhan API?</a>. Current support page.&#160;<a class="footnote-backref" href="#fnref:36" title="Jump back to footnote 36 in the text">&#8617;</a></p>
+</li>
+<li id="fn:37">
+<p>Dhan. <a href="https://dhan.co/pricing/">Pricing</a>. Current published tariff.&#160;<a class="footnote-backref" href="#fnref:37" title="Jump back to footnote 37 in the text">&#8617;</a></p>
+</li>
+<li id="fn:38">
+<p>Zerodha. <a href="https://kite.trade/docs/connect/v3/user/">Kite Connect: User Authentication</a>. Current v3 documentation.&#160;<a class="footnote-backref" href="#fnref:38" title="Jump back to footnote 38 in the text">&#8617;</a></p>
+</li>
+<li id="fn:39">
+<p>Groq. <a href="https://console.groq.com/docs/models">Supported Models</a>. Current production-model pricing and capability table.&#160;<a class="footnote-backref" href="#fnref:39" title="Jump back to footnote 39 in the text">&#8617;</a></p>
+</li>
+<li id="fn:40">
+<p>Groq. <a href="https://console.groq.com/docs/structured-outputs">Structured Outputs</a>. Current strict-mode documentation.&#160;<a class="footnote-backref" href="#fnref:40" title="Jump back to footnote 40 in the text">&#8617;</a></p>
+</li>
+<li id="fn:41">
+<p>Groq. <a href="https://console.groq.com/docs/batch">Batch Processing</a>. Current service documentation.&#160;<a class="footnote-backref" href="#fnref:41" title="Jump back to footnote 41 in the text">&#8617;</a></p>
+</li>
+<li id="fn:42">
+<p>LangChain. <a href="https://docs.langchain.com/oss/python/langgraph/workflows-agents">Workflows and Agents</a>. Current LangGraph Python documentation.&#160;<a class="footnote-backref" href="#fnref:42" title="Jump back to footnote 42 in the text">&#8617;</a></p>
+</li>
+<li id="fn:43">
+<p>LangChain. <a href="https://docs.langchain.com/oss/python/langgraph/persistence">Persistence</a>. Current LangGraph Python documentation.&#160;<a class="footnote-backref" href="#fnref:43" title="Jump back to footnote 43 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:43" title="Jump back to footnote 43 in the text">&#8617;</a></p>
+</li>
+<li id="fn:44">
+<p>LangChain. <a href="https://docs.langchain.com/oss/python/langgraph/interrupts">Interrupts</a>. Current LangGraph Python documentation.&#160;<a class="footnote-backref" href="#fnref:44" title="Jump back to footnote 44 in the text">&#8617;</a></p>
+</li>
+<li id="fn:45">
+<p>LightGBM contributors. <a href="https://lightgbm.readthedocs.io/en/stable/Features.html">Features</a>. Stable documentation.&#160;<a class="footnote-backref" href="#fnref:45" title="Jump back to footnote 45 in the text">&#8617;</a></p>
+</li>
+<li id="fn:46">
+<p>scikit-learn contributors. <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html">TimeSeriesSplit</a>. Stable documentation.&#160;<a class="footnote-backref" href="#fnref:46" title="Jump back to footnote 46 in the text">&#8617;</a></p>
+</li>
+<li id="fn:47">
+<p>scikit-learn contributors. <a href="https://scikit-learn.org/stable/modules/calibration.html">Probability Calibration</a>. Stable documentation.&#160;<a class="footnote-backref" href="#fnref:47" title="Jump back to footnote 47 in the text">&#8617;</a></p>
+</li>
+<li id="fn:48">
+<p>Zhiyu Chen and coauthors / ACL Anthology. <a href="https://aclanthology.org/2021.emnlp-main.300/">FinQA: A Dataset of Numerical Reasoning over Financial Data</a>. November 2021, EMNLP.&#160;<a class="footnote-backref" href="#fnref:48" title="Jump back to footnote 48 in the text">&#8617;</a></p>
+</li>
+<li id="fn:49">
+<p>Pranab Islam and coauthors. <a href="https://arxiv.org/abs/2311.11944">FinanceBench: A New Benchmark for Financial Question Answering</a>. 20 November 2023.&#160;<a class="footnote-backref" href="#fnref:49" title="Jump back to footnote 49 in the text">&#8617;</a></p>
+</li>
+<li id="fn:50">
+<p>Local project evidence, inspected 11 September 2026: <a href="C:/Users/admin/Desktop/fin-AAI/momentum-site/lib/finance-core.ts">finance-core.ts</a>, <a href="C:/Users/admin/Desktop/fin-AAI/momentum-site/lib/finance-paper.ts">finance-paper.ts</a>, <a href="C:/Users/admin/Desktop/fin-AAI/momentum-site/lib/finance-model.ts">finance-model.ts</a>, <a href="C:/Users/admin/Desktop/fin-AAI/momentum-site/lib/finance-market.ts">finance-market.ts</a>, <a href="C:/Users/admin/Desktop/fin-AAI/momentum-site/lib/finance-research.ts">finance-research.ts</a>, <a href="C:/Users/admin/Desktop/fin-AAI/momentum-site/lib/finance-seed.json">finance-seed.json</a>, and <a href="C:/Users/admin/Desktop/fin-AAI/config/investment_policy.json">investment_policy.json</a>. Local code observations are not a deployment or live-credential attestation.&#160;<a class="footnote-backref" href="#fnref:50" title="Jump back to footnote 50 in the text">&#8617;</a></p>
+</li>
+<li id="fn:51">
+<p>NSE. <a href="https://www.nseindia.com/static/market-data/eod-historical-data-subscription">EOD / Historical Data Subscription</a>. Current product documentation.&#160;<a class="footnote-backref" href="#fnref:51" title="Jump back to footnote 51 in the text">&#8617;</a></p>
+</li>
+<li id="fn:52">
+<p>LangChain. <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain Overview</a>. Current Python documentation.&#160;<a class="footnote-backref" href="#fnref:52" title="Jump back to footnote 52 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></main></body></html>

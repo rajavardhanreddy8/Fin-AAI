@@ -1,0 +1,14 @@
+{
+  "isin": "INE002A01018",
+  "company_name": "Reliance Industries Limited",
+  "nse_symbol": "RELIANCE",
+  "bse_code": "500325",
+  "company_kind": "non_bank",
+  "required_metrics": ["gross_revenue", "ebitda", "profit_after_tax"],
+  "sources": [
+    {"source_id": "ril_ir", "source_name": "Reliance Industries Investor Relations", "evidence_tier": "company_primary", "base_url": "https://www.ril.com/investors/financial-reporting"},
+    {"source_id": "nse_filings", "source_name": "NSE Corporate Filings", "evidence_tier": "official", "base_url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements"},
+    {"source_id": "spglobal_reliance_eod", "source_name": "S&P Global Market Intelligence via StockAnalysis", "evidence_tier": "reputable_secondary", "base_url": "https://stockanalysis.com/quote/nse/RELIANCE/history/"}
+  ],
+  "price_source": {"source_id": "spglobal_reliance_eod", "source_location": "https://stockanalysis.com/quote/nse/RELIANCE/history/"}
+}

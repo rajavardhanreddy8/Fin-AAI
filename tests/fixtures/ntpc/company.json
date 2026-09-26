@@ -1,0 +1,32 @@
+{
+  "isin": "INE733E01010",
+  "company_name": "NTPC Limited",
+  "nse_symbol": "NTPC",
+  "bse_code": "532555",
+  "company_kind": "non_bank",
+  "required_metrics": ["revenue", "profit_after_tax", "eps_diluted"],
+  "sources": [
+    {
+      "source_id": "ntpc_ir",
+      "source_name": "NTPC Investor Relations",
+      "evidence_tier": "company_primary",
+      "base_url": "https://ntpc.co.in/investors/"
+    },
+    {
+      "source_id": "nse_filings",
+      "source_name": "NSE Corporate Filings",
+      "evidence_tier": "official",
+      "base_url": "https://nsearchives.nseindia.com/"
+    },
+    {
+      "source_id": "spglobal_ntpc_eod",
+      "source_name": "S&P Global Market Intelligence via StockAnalysis",
+      "evidence_tier": "reputable_secondary",
+      "base_url": "https://stockanalysis.com/quote/nse/NTPC/history/"
+    }
+  ],
+  "price_source": {
+    "source_id": "spglobal_ntpc_eod",
+    "source_location": "https://stockanalysis.com/quote/nse/NTPC/history/"
+  }
+}

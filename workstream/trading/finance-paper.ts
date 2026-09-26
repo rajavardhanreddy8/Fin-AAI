@@ -1,6 +1,6 @@
 /** Deterministic in-memory paper ledger. It has no broker, network, or live-order capability. */
-import type { Bar, Settings } from "../../momentum-site/lib/finance-core";
-import { positionSize } from "../../momentum-site/lib/finance-core";
+import type { Bar, Settings } from "../../momentum-site/lib/finance-core.ts";
+import { positionSize } from "../../momentum-site/lib/finance-core.ts";
 
 /** A raw, unadjusted completed daily OHLCV bar. Corporate-action flags halt processing for manual review. */
 export type PaperBar = Bar & { completedAt: string; corporateAction?: string | null };
@@ -73,3 +73,4 @@ export function advancePaperLedger(ledger: PaperLedger, eventId: string, symbol:
   }
   next.processedEventIds.push(eventId); next.lastBarDateBySymbol[symbol] = bar.date; return next;
 }
+

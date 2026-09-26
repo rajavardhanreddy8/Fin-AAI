@@ -280,3 +280,8 @@
 - Observed result: Added `scripts/evaluate_finance_walkforward.mjs` with a fixed 315-bar rolling window, 63-bar step, unchanged strategy settings, and the existing 70/30 chronological holdout. The report covers 150 windows and 141 holdout trades; 26 windows were positive and 60 beat same-stock buy-and-hold.
 - Evidence: `output/finance-walkforward-2026-09-26.json`; commit `8ddbace`.
 - Decision: This is additional evidence, not promotion. The positive-window rate and benchmark comparison are not strong enough to authorize capital, and forward paper trading is still required.
+
+### E0042 | 2026-09-26 Asia/Kolkata | Verification | Walk-forward is part of the full audit
+- Checkpoint: C007, C010
+- Observed result: Updated `scripts/verify_finance_system.py` so `--full` executes `scripts/evaluate_finance_walkforward.mjs` and records its pass/fail output. The audit now proves the rolling evaluation is runnable alongside the 78 Python, 21 workstream, and 40 Site tests.
+- Evidence: `output/finance-system-full-verification.json`; commit `e39efc3`.

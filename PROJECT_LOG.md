@@ -245,3 +245,9 @@
 - Checkpoint: C010
 - Observed result: The complete verified local root history is available as `output/fin-AAI-local.bundle` with SHA-256 `2C4911B283BDFA98B1349DA78A378DB2B8C95546D986DA6E80CF71C634F3BC4C`. The root working tree remains clean; the configured GitHub remote still points to the original first commit because push authorization is pending.
 - Evidence: `Get-FileHash output/fin-AAI-local.bundle -Algorithm SHA256`; `git status --short`; `git log --oneline`.
+
+### E0036 | 2026-09-26 Asia/Kolkata | Result | Full cross-layer audit is reproducible
+- Checkpoint: C003, C007, C008, C010
+- Observed result: `python scripts/verify_finance_system.py --full` completed with a clean root tree, Python tests passing, all four investing/trading workstream suites passing, and the Momentum build/application suite passing 40 tests. The report also records both Ready scheduler tasks, provider-variable presence, the remote commit, and the latest agent report without exposing secrets.
+- Evidence: `output/finance-system-full-verification.json`; commit `ef983f1`.
+- Limitation: A green audit proves implementation behavior and current operations; it does not prove provider-backed recommendations or profitability. Those remain explicit gates.

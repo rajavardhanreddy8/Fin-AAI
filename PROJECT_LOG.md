@@ -240,3 +240,8 @@
 - Observed result: Added a 30-day, 30-minute course covering market data, investing evidence, valuation, governance, trading controls, ML discipline, agents, operations, news, paper trading and a capstone decision memo. Every exercise points to an inspectable fin-AAI artifact.
 - Evidence: `docs/FINANCE_ML_COURSE.md`; commit `2c74b60`.
 - Limitation: Completing the exercises and evaluating personal learning still requires the owner to work through the schedule.
+
+### E0035 | 2026-09-26 Asia/Kolkata | Artifact | Portable root repository bundle created
+- Checkpoint: C010
+- Observed result: The complete verified local root history is available as `output/fin-AAI-local.bundle` with SHA-256 `2C4911B283BDFA98B1349DA78A378DB2B8C95546D986DA6E80CF71C634F3BC4C`. The root working tree remains clean; the configured GitHub remote still points to the original first commit because push authorization is pending.
+- Evidence: `Get-FileHash output/fin-AAI-local.bundle -Algorithm SHA256`; `git status --short`; `git log --oneline`.

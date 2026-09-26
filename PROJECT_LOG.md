@@ -228,3 +228,9 @@
 - Observed result: Added `scripts/configure_research_provider.ps1`, which securely prompts for an OpenAI-compatible base URL, model, and hidden API key, stores only current-user environment variables, and never writes secrets to the repository or reports. PowerShell syntax validation passed.
 - Evidence: commit `d7df42d`; `docs/API_AGENT_SETUP.md`; parser output `PowerShell syntax OK`.
 - Limitation: No provider key is present yet, so no live model call has been made. The helper requires the owner to run it with their chosen provider credentials.
+
+### E0033 | 2026-09-26 Asia/Kolkata | Result | Fresh trading promotion gate remains closed
+- Checkpoint: C008
+- Observed result: The current ten-symbol evaluator completed through 2026-09-25 with 19 aggregate holdout trades, mean strategy return -0.353%, mean buy-and-hold benchmark -10.470%, and mean excess return +10.117%. The promotion gate remains `not_eligible` because at least 30 aggregate holdout trades are required before review. No order was authorized.
+- Evidence: `output/trading-evaluation-2026-09-26.json`; `scripts/evaluate_finance_daily.mjs`.
+- Follow-up: Keep the strategy out of real capital, freeze any revised rule before testing, and collect forward paper trades separately.

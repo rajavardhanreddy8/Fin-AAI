@@ -234,3 +234,9 @@
 - Observed result: The current ten-symbol evaluator completed through 2026-09-25 with 19 aggregate holdout trades, mean strategy return -0.353%, mean buy-and-hold benchmark -10.470%, and mean excess return +10.117%. The promotion gate remains `not_eligible` because at least 30 aggregate holdout trades are required before review. No order was authorized.
 - Evidence: `output/trading-evaluation-2026-09-26.json`; `scripts/evaluate_finance_daily.mjs`.
 - Follow-up: Keep the strategy out of real capital, freeze any revised rule before testing, and collect forward paper trades separately.
+
+### E0034 | 2026-09-26 Asia/Kolkata | Deliverable | Practical 30-day finance and ML course added
+- Checkpoint: C011
+- Observed result: Added a 30-day, 30-minute course covering market data, investing evidence, valuation, governance, trading controls, ML discipline, agents, operations, news, paper trading and a capstone decision memo. Every exercise points to an inspectable fin-AAI artifact.
+- Evidence: `docs/FINANCE_ML_COURSE.md`; commit `2c74b60`.
+- Limitation: Completing the exercises and evaluating personal learning still requires the owner to work through the schedule.

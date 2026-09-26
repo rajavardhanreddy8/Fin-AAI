@@ -76,9 +76,9 @@ def main() -> int:
         site = ROOT / "momentum-site"
         site_result = command(["npm.cmd", "test"], cwd=site, timeout=180)
         payload["siteTests"] = test_record(site_result)
-    required = [payload["tests"]["passed"], payload["scheduler"]["queryReturncode"] == 0]
+        walkforward = command(["node", "scripts/evaluate_finance_walkforward.mjs"], timeout=180)`r`n        payload["walkForward"] = test_record(walkforward)`r`n    required = [payload["tests"]["passed"], payload["scheduler"]["queryReturncode"] == 0]
     if full:
-        required += [all(item["passed"] for item in payload["workstreamTests"].values()), payload["siteTests"]["passed"]]
+        required += [all(item["passed"] for item in payload["workstreamTests"].values()), payload["siteTests"]["passed"], payload["walkForward"]["passed"]]
     print(json.dumps(payload, indent=2, ensure_ascii=False))
     return 0 if all(required) else 1
 

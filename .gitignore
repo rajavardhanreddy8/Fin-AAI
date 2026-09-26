@@ -10,3 +10,8 @@ data/raw/
 output/*.md
 output/*.json
 
+
+momentum-site/
+resume-builder-chatgpt-skill.zip
+supabase/.temp/
+

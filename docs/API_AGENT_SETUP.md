@@ -31,3 +31,15 @@ evaluation agents work without an API key. Only the Research Specialists agent
 requires the provider settings. The queue enforces the configured request and
 token budgets and stores only model name, status, citations, and validated JSON
 results.
+
+## Configure a local research provider
+
+The local specialist queue needs a caller-owned OpenAI-compatible provider. OpenRouter, Groq, and other compatible providers can be used by setting their base URL and model ID. Configure it interactively; the API key is hidden while entered and is stored only in the current Windows user's environment.
+
+```powershell
+.\scripts\configure_research_provider.ps1
+python scripts\verify_finance_system.py
+python scripts\run_finance_agents.py --phase pre --db output\finance-automation.db
+```
+
+The verifier reports only `set` or `missing`; it never prints the key. The scheduled tasks inherit the user environment after they are restarted or the next user session begins. Do not paste API keys into chat, reports, source files, or task arguments.

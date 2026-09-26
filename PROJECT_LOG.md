@@ -274,3 +274,9 @@
 - Evidence: `docs/REAL_WORK_STATUS.md`; `output/finance-system-full-verification.json`; commit `9a9c3ac`.
 - Limitation: Provider variables remain missing; the system remains research/simulation only and the trading strategy is not promotion-eligible.
 - Bundle: `output/fin-AAI-local.bundle` verifies complete with SHA-256 `40348401E2D7DFAD78D007D43B9C364551884FDC18D4966F1BE7A2FB0358D74B`.
+
+### E0041 | 2026-09-26 Asia/Kolkata | Research | Fixed-protocol walk-forward evidence
+- Checkpoint: C007, C010
+- Observed result: Added `scripts/evaluate_finance_walkforward.mjs` with a fixed 315-bar rolling window, 63-bar step, unchanged strategy settings, and the existing 70/30 chronological holdout. The report covers 150 windows and 141 holdout trades; 26 windows were positive and 60 beat same-stock buy-and-hold.
+- Evidence: `output/finance-walkforward-2026-09-26.json`; commit `8ddbace`.
+- Decision: This is additional evidence, not promotion. The positive-window rate and benchmark comparison are not strong enough to authorize capital, and forward paper trading is still required.

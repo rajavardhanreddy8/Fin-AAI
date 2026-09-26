@@ -52,6 +52,11 @@ def run_agent_phase(
         "status": "running",
         "errors": [],
         "boundary": "Research and simulation only; agents cannot place orders or change rules.",
+        "paperTrading": {
+            "status": "separate_momentum_ledger",
+            "ordersCreated": 0,
+            "message": "This local scheduler does not create or advance paper orders; paper positions remain in the authenticated Momentum ledger."
+        },
     }
     try:
         calendar = _calendar(db, day.year)
@@ -97,3 +102,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

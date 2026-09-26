@@ -17,7 +17,7 @@ from .phase2 import (
 )
 from .quality import run_quality_checks, save_quality_json
 from .report import build_weekly_report, save_report
-from .research_agent import OpenAICompatibleLLM, run_research_agent
+from .research_agent import OpenAICompatibleLLM, ResearchResult, _provider_required_report, build_evidence_packet, run_research_agent
 from .supabase_adapter import SupabaseSettings, create_service_client, verify_connection
 from .supabase_sync import sync_accepted_records
 from .weekly_pipeline import run_weekly_universe_pipeline
@@ -326,7 +326,14 @@ def main(argv: list[str] | None = None) -> int:
             model = model or OpenAICompatibleLLM.from_env()
             return model(system, user)
 
-        result = run_research_agent(db_path, args.fixtures, as_of, call_llm)
+        try:
+            result = run_research_agent(db_path, args.fixtures, as_of, call_llm)
+        except ValueError as exc:
+            message = str(exc)
+            if not message.startswith("Missing server-only LLM setting(s):"):
+                raise
+            packet, blockers = build_evidence_packet(db_path, args.fixtures, as_of)
+            result = ResearchResult("provider_required", packet["security"]["isin"], packet["as_of"], _provider_required_report(packet, message), blockers=blockers + (message,))
         save_report(result.report, args.output)
         print(json.dumps({
             "status": result.status,
@@ -343,6 +350,7 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
 
 

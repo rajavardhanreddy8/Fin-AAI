@@ -276,6 +276,45 @@ No LLM recommendation was requested because deterministic readiness checks faile
 """
 
 
+def _provider_required_report(packet: dict[str, Any], detail: str) -> str:
+    """Render a truthful evidence snapshot when no model provider is configured."""
+    price = packet["latest_eod_price"]
+    price_line = "missing" if not price else f"INR {price['close']} on {price['trade_date']}"
+    documents = "\n".join(
+        f"- {row['title']} [[{row['document_id']}]]({row['source_location']})"
+        for row in packet["documents"][:10]
+    ) or "- No accepted documents"
+    gaps = "\n".join(f"- {item}" for item in packet["blockers"]) or "- Provider configuration is required for model synthesis"
+    return f"""# Research evidence review — {packet['security']['company_name']}
+
+**Status:** Provider required; no recommendation issued  
+**As of:** {packet['as_of']}  
+**Latest EOD close:** {price_line}
+
+The deterministic pipeline completed its evidence checks, but no language-model provider was called. This report is an inspectable evidence snapshot, not an investment recommendation.
+
+## Provider status
+
+- {detail}
+
+## Evidence coverage
+
+- Accepted financial facts: {len(packet['latest_metrics'])}
+- Accepted source documents: {len(packet['documents'])}
+- Governance flags: {len(packet['governance_flags'])}
+- Deterministic valuation: {packet['valuation'] or 'not available'}
+
+## Source documents
+
+{documents}
+
+## Outstanding gaps
+
+{gaps}
+
+The next step is to configure a caller-owned provider and rerun this exact frozen evidence packet. The system still cannot place or authorize trades.
+"""
+
 def _render_report(packet: dict[str, Any], recommendation: dict[str, Any]) -> str:
     evidence = {
         (row["evidence_key"], row["document_id"]): row
@@ -365,3 +404,5 @@ def run_research_agent(
                 (recommendation_id, item["document_id"], item["claim"]),
             )
     return ResearchResult("completed", isin, as_of.isoformat(), report, recommendation_id)
+
+

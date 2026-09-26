@@ -256,3 +256,9 @@
 - Checkpoint: C008, C010
 - Observed result: Every newly generated pre/post report now includes `paperTrading.status: separate_momentum_ledger`, `ordersCreated: 0`, and a plain-language boundary stating that the local scheduler never creates or advances paper orders. An isolated weekend run verified the field in the generated JSON.
 - Evidence: `scripts/run_finance_agents.py`; `output/finance-automation-2026-09-26-pre.json`; commit `67775bb`.
+
+### E0038 | 2026-09-26 Asia/Kolkata | Test | Provider HTTP adapter smoke-tested locally
+- Checkpoint: C005
+- Observed result: Added a local HTTP server test covering the OpenAI-compatible adapter's `/chat/completions` path, bearer authentication, model payload, completion-token cap, and JSON response parsing. The focused test passed 4/4; the full Python suite also passed after the change.
+- Evidence: `tests/test_api_agent_config.py`; commit `60468bf`.
+- Limitation: This validates the adapter contract only. It is not a live provider call until the owner configures a real provider key.

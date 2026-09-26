@@ -24,7 +24,7 @@ User objective: a personal Indian-equity platform for growth investing and tradi
 
 ## Current verification (2026-09-26)
 
-- Root source is committed locally through `1210a9d`; the configured GitHub remote remains at the original first commit because publication awaits explicit authorization.
+- Root source is committed locally through `28b6381`; the configured GitHub remote remains at the original first commit because publication awaits explicit authorization.
 - Windows pre-market and post-market tasks are registered and Ready.
 - Official refresh through 2026-09-25 updated 499/500 discovery symbols and made all ten pilot financial profiles ready.
 - Momentum version 45 is privately deployed; local build and application suite passed 40 tests.
@@ -34,5 +34,6 @@ User objective: a personal Indian-equity platform for growth investing and tradi
 
 ## Status note (2026-09-24)
 This checklist records the 2026-09-10 baseline. For current goals, status and execution order, use [CONSOLIDATED_GOALS.md](CONSOLIDATED_GOALS.md) and [PROJECT_LOG.md](../PROJECT_LOG.md).
+
 
 

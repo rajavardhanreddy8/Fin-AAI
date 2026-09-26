@@ -216,3 +216,9 @@
 - Evidence: `output/finance-seed-refresh.json`; `output/current-universe.json`; `output/current-universe.db`; `output/itc-current-evidence.md`.
 - Limitation: The ITC report is explicitly `provider_required` and issues no recommendation because no caller-owned model provider is configured. The broad 500-company refresh is discovery pricing only; full financial evidence remains limited to the ten pilot profiles.
 - Follow-up: Configure a provider for cited synthesis, then run the same frozen current evidence packet. Expand source-backed financial coverage beyond the pilot set and collect forward paper results before any capital decision.
+
+### E0031 | 2026-09-26 Asia/Kolkata | Result | Momentum version 45 privately deployed with current discovery prices
+- Checkpoint: C007, C009, C010
+- Observed result: The latest private Site source was reconciled at `c6f132a281065ee7ca9015a8194c6ccd215cda1d`, with the current official discovery seed through 2026-09-25 (499 refreshed symbols). The production build passed 40 application tests locally. Sites saved version 45 and deployment `appgdep_6ab79f380fd88191b7feb5495fbef398` completed with `succeeded`; the owner-only live URL remains https://momentum-os.rajavreddy-g.chatgpt.site.
+- Evidence: Sites `get_site` reports `latest_version_number: 45`, `access_mode: custom`, and the succeeded deployment URL; local `npm test` reported 40/40 passing.
+- Limitation: This refresh updates discovery prices and volumes only. The ten pilot financial profiles are current and ready in the local official refresh, but the broad 500-company universe is not fully researched. Model provider configuration, paper-trading proof, and broker integration remain open.

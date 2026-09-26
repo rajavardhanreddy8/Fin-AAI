@@ -106,3 +106,21 @@ PDF text, and records the binary SHA-256 hash.
 The checked-in fixtures are deterministic regression evidence, not a claim of live market data. A production recommendation must be preceded by a current-date refresh and readiness check. Model output is schema-validated, positive actions require deterministic valuation evidence and no blocking governance flag, every claim must cite a supplied document ID, and accepted recommendations are appended to the immutable ledger.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the wider phased design.
+
+## Current verification workflow
+
+From the project root, run the full cross-layer audit:
+
+```powershell
+python scripts\verify_finance_system.py --full
+```
+
+The audit checks the Python research suite, investing and trading workstream suites, the Momentum production build and application tests, registered weekday agent tasks, provider-variable presence, Git state, and the latest automation report. It never prints secret values. The JSON result is written to `output/finance-system-full-verification.json`.
+
+To configure a caller-owned OpenAI-compatible provider without putting a key in chat or source files:
+
+```powershell
+.\scripts\configure_research_provider.ps1
+```
+
+Visible current artifacts include `output/current-universe.json`, `output/itc-current-evidence.md`, `output/trading-evaluation-2026-09-26.json`, and `output/finance-system-full-verification.json`. These reports distinguish evidence readiness, model availability, historical simulation, paper trading, and real-money execution.

@@ -222,3 +222,9 @@
 - Observed result: The latest private Site source was reconciled at `c6f132a281065ee7ca9015a8194c6ccd215cda1d`, with the current official discovery seed through 2026-09-25 (499 refreshed symbols). The production build passed 40 application tests locally. Sites saved version 45 and deployment `appgdep_6ab79f380fd88191b7feb5495fbef398` completed with `succeeded`; the owner-only live URL remains https://momentum-os.rajavreddy-g.chatgpt.site.
 - Evidence: Sites `get_site` reports `latest_version_number: 45`, `access_mode: custom`, and the succeeded deployment URL; local `npm test` reported 40/40 passing.
 - Limitation: This refresh updates discovery prices and volumes only. The ten pilot financial profiles are current and ready in the local official refresh, but the broad 500-company universe is not fully researched. Model provider configuration, paper-trading proof, and broker integration remain open.
+
+### E0032 | 2026-09-26 Asia/Kolkata | Progress | Local provider setup made executable without exposing keys
+- Checkpoint: C005, C010
+- Observed result: Added `scripts/configure_research_provider.ps1`, which securely prompts for an OpenAI-compatible base URL, model, and hidden API key, stores only current-user environment variables, and never writes secrets to the repository or reports. PowerShell syntax validation passed.
+- Evidence: commit `d7df42d`; `docs/API_AGENT_SETUP.md`; parser output `PowerShell syntax OK`.
+- Limitation: No provider key is present yet, so no live model call has been made. The helper requires the owner to run it with their chosen provider credentials.

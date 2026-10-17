@@ -1,0 +1,7 @@
+{
+  "fee_bps": 10.0,
+  "minimum_fee_inr": 1.0,
+  "slippage_bps": 5.0,
+  "decision_latency_seconds": 1.0,
+  "participation_rate": 0.01
+}

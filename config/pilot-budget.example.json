@@ -1,0 +1,22 @@
+{
+  "credit_usd": "REPLACE_WITH_CURRENT_AVAILABLE_CREDIT_USD",
+  "prices": {
+    "jev": {
+      "model": "typesafe/jev-1.13",
+      "input_usd_per_token": "REPLACE_WITH_DATED_PRICE",
+      "output_usd_per_token": "REPLACE_WITH_DATED_PRICE",
+      "source": "REPLACE_WITH_OFFICIAL_PRICE_SOURCE",
+      "verified_at": "YYYY-MM-DDTHH:MM:SS+00:00",
+      "context_tokens": 512,
+      "usd_inr": "REPLACE_WITH_DATED_USD_INR_RATE",
+      "fx_source": "REPLACE_WITH_FX_SOURCE",
+      "fx_verified_at": "YYYY-MM-DDTHH:MM:SS+00:00"
+    }
+  },
+  "billing": [
+    {"scope": "infra", "amount": "REPLACE_WITH_CURRENT_AMOUNT", "as_of": "YYYY-MM-DDTHH:MM:SS+00:00", "source": "REPLACE_WITH_BILLING_SOURCE"},
+    {"scope": "storage", "amount": "REPLACE_WITH_CURRENT_AMOUNT", "as_of": "YYYY-MM-DDTHH:MM:SS+00:00", "source": "REPLACE_WITH_BILLING_SOURCE"},
+    {"scope": "jev:YYYY-MM", "amount": "REPLACE_WITH_CURRENT_AMOUNT", "as_of": "YYYY-MM-DDTHH:MM:SS+00:00", "source": "REPLACE_WITH_BILLING_SOURCE"}
+  ],
+  "jev_resolved_model": "typesafe/jev-1.13-YYYYMMDD"
+}

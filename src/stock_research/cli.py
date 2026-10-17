@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import date, timedelta
+from datetime import date, time, timedelta
 from pathlib import Path
 
 from .db import initialize_database
@@ -21,6 +21,7 @@ from .research_agent import OpenAICompatibleLLM, ResearchResult, _provider_requi
 from .supabase_adapter import SupabaseSettings, create_service_client, verify_connection
 from .supabase_sync import sync_accepted_records
 from .weekly_pipeline import run_weekly_universe_pipeline
+from .intraday_pilot import compare_holdout, load_bars, load_verified_bars, pilot_status, record_run, replay, train_candidate, train_candidate_from_bars
 
 
 def parser() -> argparse.ArgumentParser:
@@ -149,6 +150,28 @@ def parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Refresh official EOD prices, ownership, annual reports, and annual financials before analysis",
     )
+    pilot_status_command = commands.add_parser("pilot-status", help="Show the locked NIFTYBEES intraday pilot status")
+    pilot_status_command.add_argument("--pilot-db", default="output/intraday-pilot.db")
+    pilot_status_command.add_argument("--forward-db", help="Read-only forward-paper journal to audit for qualification")
+    pilot_status_command.add_argument("--strategy-id", help="Frozen forward strategy identifier when auditing a journal")
+    commands.add_parser("pilot-provider-status", help="Inspect API configuration gaps without invoking models")
+    pilot_backtest = commands.add_parser("pilot-backtest", help="Replay completed five-minute bars in paper-safe backtest mode")
+    pilot_backtest.add_argument("bars_csv")
+    pilot_backtest.add_argument("--pilot-db", default="output/intraday-pilot.db")
+    pilot_backtest.add_argument("--run-id", required=True)
+    pilot_train = commands.add_parser("pilot-train", help="Train a candidate Q-policy from matched paper transitions")
+    pilot_train.add_argument("--pilot-db", default="output/intraday-pilot.db")
+    pilot_train.add_argument("--source-run", required=True)
+    pilot_train.add_argument("--version", required=True)
+    pilot_train_bars = commands.add_parser("pilot-train-bars", help="Train a seeded candidate from the first 60% of manifest-verified sessions")
+    pilot_train_bars.add_argument("bars_csv")
+    pilot_train_bars.add_argument("--pilot-db", default="output/intraday-pilot.db")
+    pilot_train_bars.add_argument("--version", required=True)
+    pilot_train_bars.add_argument("--seed", type=int, default=42)
+    pilot_compare = commands.add_parser("pilot-compare", help="Compare frozen rules-only and RL-only holdout variants")
+    pilot_compare.add_argument("bars_csv")
+    pilot_compare.add_argument("--pilot-db", default="output/intraday-pilot.db")
+    pilot_compare.add_argument("--version", required=True)
     return root
 
 
@@ -163,6 +186,28 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "init-db":
         initialize_database(db_path)
         print(f"Initialized {db_path}")
+    elif args.command == "pilot-status":
+        print(json.dumps(pilot_status(args.pilot_db, forward_db_path=args.forward_db, strategy_id=args.strategy_id), indent=2))
+    elif args.command == "pilot-provider-status":
+        from .pilot_agents import provider_readiness
+        print(json.dumps(provider_readiness(), indent=2))
+    elif args.command == "pilot-backtest":
+        bars = load_verified_bars(args.bars_csv)
+        dataset = json.loads(Path(args.bars_csv).with_name("dataset-manifest.json").read_text(encoding="utf-8"))
+        special = dataset.get("calendar", {}).get("reconciliation", {}).get("known_special_sessions_without_cached_bars", {})
+        session_schedules = {day: tuple((time.fromisoformat(opening), time.fromisoformat(closing)) for opening, closing in evidence.get("segments", []))
+                             for day, evidence in special.items() if evidence.get("segments")}
+        observations = replay(bars, session_schedules=session_schedules)
+        summary = record_run(args.pilot_db, args.run_id, "backtest", None, observations)
+        print(json.dumps(summary, indent=2))
+    elif args.command == "pilot-train":
+        policy = train_candidate(args.pilot_db, args.source_run, args.version)
+        print(json.dumps({"version": args.version, "states": len(policy.values), "status": "candidate"}, indent=2))
+    elif args.command == "pilot-train-bars":
+        policy = train_candidate_from_bars(args.pilot_db, args.bars_csv, args.version, seed=args.seed)
+        print(json.dumps({"version": args.version, "states": len(policy.values), "status": "candidate", "seed": args.seed}, indent=2))
+    elif args.command == "pilot-compare":
+        print(json.dumps(compare_holdout(args.pilot_db, args.bars_csv, args.version), indent=2))
     elif args.command == "import-universe":
         initialize_database(db_path)
         print(f"Imported {import_universe(db_path, args.csv_path)} securities")

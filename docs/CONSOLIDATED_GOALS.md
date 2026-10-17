@@ -1,5 +1,13 @@
 # fin-AAI: consolidated goals and execution order
 
+**Current intraday development, 2026-10-07:** The separate ₹5,000 NIFTYBEES
+pilot is now being developed in three parallel tracks: data/isolation,
+shared engine/RL, and API agents/paper operations. See
+[track goals and prompts](PARALLEL_PILOT_TRACKS.md) and
+[pilot acceptance criteria](INTRADAY_IMPLEMENTATION.md). The original Momentum
+research workstream below remains separate; its capital/contribution assumptions
+and daily-bar trading evidence do not qualify the intraday pilot.
+
 Reconciled on 2026-09-24 Asia/Kolkata from the fin-AAI project tasks, related tasks run from this folder, the project log, repository, and the Momentum research blueprint. Status claims below refer to the latest recorded verification, not assumptions from earlier work.
 
 ## One project outcome

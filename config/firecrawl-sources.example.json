@@ -1,0 +1,13 @@
+[
+  {
+    "source_id": "publisher_example",
+    "permitted": false,
+    "allowed_urls": [
+      "https://publisher.example/article"
+    ],
+    "permission_basis": "Replace with the publisher's terms or written permission for this exact public article URL.",
+    "terms_url": "https://publisher.example/terms",
+    "retention": "Record allowed retention and reuse; do not infer training permission.",
+    "reuse_uncertainty": "Unknown until reviewed against publisher terms."
+  }
+]

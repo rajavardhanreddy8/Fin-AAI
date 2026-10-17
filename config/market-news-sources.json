@@ -1,0 +1,11 @@
+[
+  {
+    "source_id": "pib_press_releases",
+    "url": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3",
+    "permitted": true,
+    "polling_interval": 3600,
+    "permission_basis": "PIB RSS directory explicitly lists this Press Releases RSS endpoint; PIB terms allow accurate reproduction with prominent source acknowledgement, excluding third-party material.",
+    "terms_url": "https://www.pib.gov.in/ContentPage.aspx?lang=2&menuid=19&reg=48",
+    "feed_directory_url": "https://www.pib.gov.in/ViewRss.aspx/content/RssMain.aspx?Lang=1&ModId=18&Regid=3&reg=3"
+  }
+]

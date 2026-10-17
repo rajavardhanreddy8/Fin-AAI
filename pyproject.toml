@@ -12,6 +12,7 @@ dependencies = ["pypdf==6.7.0"]
 
 [project.optional-dependencies]
 supabase = ["supabase==2.31.0"]
+aws = ["boto3>=1.41,<2", "awscrt>=0.27,<1", "certifi>=2025.1.31"]
 
 [project.scripts]
 stock-research = "stock_research.cli:main"

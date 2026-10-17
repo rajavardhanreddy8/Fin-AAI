@@ -1,0 +1,80 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "fin-AAI data foundation — isolates Breeze collection from offline paper trading and forbids inbound collector access.",
+  "Metadata": {
+    "AWSToolsMetrics": { "AWSAgentToolkit": "aws-cloudformation@3" },
+    "com.aws.cloudformation.Context": {
+      "arch": "collector public subnet -> private S3; paper worker private subnet",
+      "must": ["Breeze secret stays off paper worker", "no collector ingress", "all stored data private + versioned"],
+      "ref": [{ "at": "docs/AWS_PAPER_PILOT_ARCHITECTURE.md", "has": "pilot boundaries", "scope": "project" }]
+    }
+  },
+  "Resources": {
+    "PilotVpc": {
+      "Type": "AWS::EC2::VPC",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "dedicated pilot network separates broker-data path from other workloads", "must": ["do not peer with shared VPC without review"], "mutable": "review-required" } },
+      "Properties": { "CidrBlock": "10.42.0.0/16", "EnableDnsHostnames": true, "EnableDnsSupport": true, "Tags": [{"Key":"Name","Value":{"Fn::Sub":"${AWS::StackName}-vpc"}},{"Key":"Project","Value":"fin-aai"},{"Key":"Environment","Value":"pilot"}] }
+    },
+    "InternetGateway": { "Type": "AWS::EC2::InternetGateway", "Properties": { "Tags": [{"Key":"Project","Value":"fin-aai"},{"Key":"Environment","Value":"pilot"}] } },
+    "GatewayAttachment": { "Type": "AWS::EC2::VPCGatewayAttachment", "Properties": { "InternetGatewayId": {"Ref":"InternetGateway"}, "VpcId": {"Ref":"PilotVpc"} } },
+    "CollectorSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "collector needs fixed outbound identity for Breeze", "must": ["no public service ingress"], "mutable": "review-required" } },
+      "Properties": { "VpcId":{"Ref":"PilotVpc"}, "CidrBlock":"10.42.10.0/24", "MapPublicIpOnLaunch":false, "AvailabilityZone":{"Fn::Select":[0,{"Fn::GetAZs":""}]}, "Tags":[{"Key":"Name","Value":{"Fn::Sub":"${AWS::StackName}-collector"}},{"Key":"Project","Value":"fin-aai"}] }
+    },
+    "PrivateWorkerSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "offline paper and backtest worker has no internet route", "must": ["never add IGW or NAT route without model-egress review"], "mutable": "must-never-change" } },
+      "Properties": { "VpcId":{"Ref":"PilotVpc"}, "CidrBlock":"10.42.20.0/24", "MapPublicIpOnLaunch":false, "AvailabilityZone":{"Fn::Select":[0,{"Fn::GetAZs":""}]}, "Tags":[{"Key":"Name","Value":{"Fn::Sub":"${AWS::StackName}-paper"}},{"Key":"Project","Value":"fin-aai"}] }
+    },
+    "CollectorRouteTable": { "Type":"AWS::EC2::RouteTable", "Properties": { "VpcId":{"Ref":"PilotVpc"}, "Tags":[{"Key":"Project","Value":"fin-aai"}] } },
+    "CollectorDefaultRoute": { "Type":"AWS::EC2::Route", "DependsOn":"GatewayAttachment", "Properties": { "RouteTableId":{"Ref":"CollectorRouteTable"}, "DestinationCidrBlock":"0.0.0.0/0", "GatewayId":{"Ref":"InternetGateway"} } },
+    "CollectorRouteAssociation": { "Type":"AWS::EC2::SubnetRouteTableAssociation", "Properties": { "SubnetId":{"Ref":"CollectorSubnet"}, "RouteTableId":{"Ref":"CollectorRouteTable"} } },
+    "CollectorSecurityGroup": {
+      "Type":"AWS::EC2::SecurityGroup",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "outbound-only collector, accessed only through SSM", "must": ["do not add ingress rules", "HTTPS egress is solely for Breeze and AWS APIs"], "mutable":"must-never-change" } },
+      "Properties": { "GroupDescription":"fin-AAI Breeze data collector: no inbound access", "VpcId":{"Ref":"PilotVpc"}, "SecurityGroupEgress":[{"IpProtocol":"tcp","FromPort":443,"ToPort":443,"CidrIp":"0.0.0.0/0","Description":"TLS to Breeze and AWS APIs"}], "Tags":[{"Key":"Name","Value":{"Fn::Sub":"${AWS::StackName}-collector-egress"}},{"Key":"Project","Value":"fin-aai"}] }
+    },
+    "DataBucket": {
+      "Type":"AWS::S3::Bucket",
+      "DeletionPolicy":"Retain",
+      "UpdateReplacePolicy":"Retain",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "durable raw evidence and immutable simulation inputs", "must": ["block public access", "keep versioning enabled", "retain on stack deletion"], "mutable":"review-required" } },
+      "Properties": { "BucketEncryption":{"ServerSideEncryptionConfiguration":[{"ServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"},"BucketKeyEnabled":true}]}, "PublicAccessBlockConfiguration":{"BlockPublicAcls":true,"BlockPublicPolicy":true,"IgnorePublicAcls":true,"RestrictPublicBuckets":true}, "OwnershipControls":{"Rules":[{"ObjectOwnership":"BucketOwnerEnforced"}]}, "VersioningConfiguration":{"Status":"Enabled"}, "Tags":[{"Key":"Project","Value":"fin-aai"},{"Key":"Environment","Value":"pilot"}] }
+    },
+    "DataBucketTlsPolicy": {
+      "Type":"AWS::S3::BucketPolicy",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "prevents unencrypted transport to stored market data", "must": ["retain explicit non-TLS deny"], "mutable":"must-never-change" } },
+      "Properties": { "Bucket":{"Ref":"DataBucket"}, "PolicyDocument":{"Version":"2012-10-17","Statement":[{"Sid":"DenyInsecureTransport","Effect":"Deny","Principal":"*","Action":"s3:*","Resource":[{"Fn::GetAtt":["DataBucket","Arn"]},{"Fn::Sub":"${DataBucket.Arn}/*"}],"Condition":{"Bool":{"aws:SecureTransport":"false"}}}]} }
+    },
+    "BreezeCollectorSecret": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "isolates broker credentials from code and the paper worker", "must": ["store actual Breeze values only through Secrets Manager", "do not put order APIs in collector code"], "mutable": "review-required" } },
+      "Properties": { "Description": "fin-AAI Breeze credentials for the data-only collector; replace generated placeholders in the AWS console.", "GenerateSecretString": { "SecretStringTemplate": "{\"api_key\":\"replace-in-console\",\"api_secret\":\"replace-in-console\",\"session_token\":\"replace-daily-in-console\"}", "GenerateStringKey": "placeholder", "PasswordLength": 32, "ExcludePunctuation": true }, "Tags": [{"Key":"Project","Value":"fin-aai"},{"Key":"Purpose","Value":"BreezeDataOnly"}] }
+    },
+    "CollectorRole": {
+      "Type":"AWS::IAM::Role",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "collector role writes only raw snapshots and has remote maintenance through SSM", "must": ["no Breeze secret access until a dedicated secret is created", "no S3 delete or read rights"], "mutable":"review-required" } },
+      "Properties": { "AssumeRolePolicyDocument":{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole"}]}, "ManagedPolicyArns":["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"], "Policies":[{"PolicyName":"WriteRawMarketDataOnly","PolicyDocument":{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:PutObject","s3:AbortMultipartUpload"],"Resource":{"Fn::Sub":"${DataBucket.Arn}/raw/*"}},{"Effect":"Allow","Action":"s3:GetBucketLocation","Resource":{"Fn::GetAtt":["DataBucket","Arn"]}},{"Effect":"Allow","Action":"secretsmanager:GetSecretValue","Resource":{"Ref":"BreezeCollectorSecret"}}]}}], "Tags":[{"Key":"Project","Value":"fin-aai"},{"Key":"Purpose","Value":"BreezeDataOnly"}] }
+    },
+    "CollectorInstanceProfile": { "Type":"AWS::IAM::InstanceProfile", "Properties": { "Roles":[{"Ref":"CollectorRole"}] } }
+    ,"LocalIngestRole": {
+      "Type": "AWS::IAM::Role",
+      "Metadata": { "com.aws.cloudformation.Context": { "why": "local intermediary uploads raw candles with a narrow assumed role", "must": ["only write raw/", "no read or delete permission"], "mutable": "review-required" } },
+      "Properties": {
+        "AssumeRolePolicyDocument": { "Version": "2012-10-17", "Statement": [{ "Effect": "Allow", "Principal": { "AWS": { "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:root" } }, "Action": "sts:AssumeRole" }] },
+        "Policies": [{ "PolicyName": "WriteRawMarketDataOnly", "PolicyDocument": { "Version": "2012-10-17", "Statement": [{ "Effect": "Allow", "Action": ["s3:PutObject","s3:AbortMultipartUpload"], "Resource": { "Fn::Sub": "${DataBucket.Arn}/raw/*" } }, { "Effect": "Allow", "Action": "s3:GetBucketLocation", "Resource": { "Fn::GetAtt": ["DataBucket","Arn"] } }] } }],
+        "Tags": [{"Key":"Project","Value":"fin-aai"},{"Key":"Purpose","Value":"LocalBreezeIngest"}]
+      }
+    }
+  },
+  "Outputs": {
+    "VpcId": { "Description":"Dedicated fin-AAI pilot VPC", "Value":{"Ref":"PilotVpc"} },
+    "CollectorSubnetId": { "Description":"Subnet for fixed-IP Breeze collector", "Value":{"Ref":"CollectorSubnet"} },
+    "CollectorSecurityGroupId": { "Description":"No-ingress collector security group", "Value":{"Ref":"CollectorSecurityGroup"} },
+    "DataBucketName": { "Description":"Private versioned market-data bucket", "Value":{"Ref":"DataBucket"} },
+    "CollectorInstanceProfileName": { "Description":"Instance profile for the data-only collector", "Value":{"Ref":"CollectorInstanceProfile"} }
+    ,"BreezeSecretName": { "Description":"Secret that holds Breeze credentials only for the collector", "Value":{"Ref":"BreezeCollectorSecret"} }
+    ,"LocalIngestRoleArn": { "Description":"Least-privilege role for local raw-data uploads", "Value":{"Fn::GetAtt":["LocalIngestRole","Arn"]} }
+  }
+}

@@ -149,8 +149,8 @@ class PilotBudgetConfig:
                 aware(item["as_of"])
         except (ArithmeticError, KeyError, TypeError, ValueError) as exc:
             raise ValueError("invalid billing evidence") from exc
-        snapshot = raw.get("jev_resolved_model")
-        if not isinstance(snapshot, str) or not re.fullmatch(re.escape(JEV_MODEL) + r"-\d{8}", snapshot):
+        snapshot = raw.get("jev_resolved_model", "")
+        if "jev" in providers and (not isinstance(snapshot, str) or not re.fullmatch(re.escape(JEV_MODEL) + r"-\d{8}", snapshot)):
             raise ValueError("budget config requires exact resolved Jev snapshot")
         return cls(credit, parsed, tuple(billing), snapshot)
 
@@ -170,7 +170,9 @@ class PilotBudgetConfig:
         scopes = [item["scope"] for item in self.billing]
         if len(scopes) != len(set(scopes)):
             raise ValueError("billing evidence scopes must be unique")
-        required = {"infra", "storage", f"jev:{now:%Y-%m}"}
+        required = {"infra", "storage"}
+        if "jev" in providers:
+            required.add(f"jev:{now:%Y-%m}")
         if "nova" in providers:
             required.add("bedrock")
         missing = required - set(scopes)

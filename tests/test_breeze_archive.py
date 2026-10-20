@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import csv
 import importlib.util
 import tempfile
 import unittest
@@ -10,10 +11,54 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from stock_research.collectors.breeze_archive import IST, audit_snapshot, build_dataset, verify_archive, verify_dataset, write_json
+from stock_research.collectors.breeze_archive import IST, audit_snapshot, build_dataset, build_reconciled_dataset, verify_archive, verify_dataset, write_json
 
 
 class BreezeArchiveTests(unittest.TestCase):
+    def test_reconciled_dataset_is_separate_and_excludes_unreceipted_special_session(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sessions = {}
+            for day, expected in (("2026-10-01", 75), ("2026-10-03", 12)):
+                raw = root / "raw" / f"{day}.json"
+                raw.parent.mkdir(parents=True, exist_ok=True)
+                raw.write_text(day, encoding="utf-8")
+                normalized = root / "normalized" / f"{day}.csv"
+                normalized.parent.mkdir(parents=True, exist_ok=True)
+                start = datetime.fromisoformat(f"{day}T09:15:00+05:30")
+                with normalized.open("w", newline="", encoding="utf-8") as stream:
+                    writer = csv.writer(stream)
+                    writer.writerow(("at", "open", "high", "low", "close", "volume"))
+                    for index in range(expected):
+                        writer.writerow(((start + timedelta(minutes=5 * index)).isoformat(), 10, 11, 9, 10, 100))
+                raw_hash = hashlib.sha256(raw.read_bytes()).hexdigest()
+                normalized_hash = hashlib.sha256(normalized.read_bytes()).hexdigest()
+                evidence = {"raw_path": str(raw), "sha256": raw_hash}
+                if expected == 75:
+                    evidence.update(uploaded_sha256=raw_hash, bucket="archive", s3_key=f"raw/{day}", s3_version="v1")
+                sessions[day] = {
+                    "status": "valid", "expected_bars": expected, "bars": expected,
+                    "csv_path": str(normalized), "csv_sha256": normalized_hash,
+                    "calendar_verified": False, "raw_evidence": [evidence],
+                }
+
+            source_manifest = {"sessions": sessions, "calendar_gaps": []}
+            write_json(root / "manifest.json", source_manifest)
+            canonical_csv = root / "audited-bars.csv"
+            canonical_manifest = root / "dataset-manifest.json"
+            canonical_csv.write_bytes(b"frozen canonical csv\n")
+            canonical_manifest.write_bytes(b"stale canonical manifest\n")
+            before = (canonical_csv.read_bytes(), canonical_manifest.read_bytes())
+
+            result = build_reconciled_dataset(root, source_manifest)
+
+            self.assertEqual(result["included_sessions"], ["2026-10-01"])
+            self.assertEqual(result["excluded_sessions"], ["2026-10-03"])
+            self.assertIn("missing a complete matching upload receipt", result["reconciliation"]["excluded_special_sessions"]["2026-10-03"])
+            self.assertEqual(result["reconciliation"]["source_manifest_sha256"], hashlib.sha256((root / "manifest.json").read_bytes()).hexdigest())
+            self.assertEqual((canonical_csv.read_bytes(), canonical_manifest.read_bytes()), before)
+            verify_dataset(root / "reconciled-bars-v1.csv", root / "reconciled-bars-v1-manifest.json")
+
     def test_atomic_json_write_retries_a_transient_windows_file_lock(self):
         with tempfile.TemporaryDirectory() as temporary:
             with patch.object(Path, "replace", side_effect=[PermissionError("locked"), None]) as replace, patch("stock_research.collectors.breeze_archive.sleep") as retry_sleep:

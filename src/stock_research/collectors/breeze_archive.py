@@ -138,9 +138,10 @@ def raw_evidence(session: dict) -> list[dict]:
     return session.get("raw_evidence") or ([session] if session.get("raw_path") else [])
 
 
-def build_dataset(root: Path, manifest: dict) -> dict:
+def build_dataset(root: Path, manifest: dict, *, dataset_name: str = "audited-bars") -> dict:
     """Combine audited sessions, retaining exclusions; this does not qualify trading."""
-    destination = root / "audited-bars.csv"
+    destination = root / f"{dataset_name}.csv"
+    dataset_manifest_path = root / ("dataset-manifest.json" if dataset_name == "audited-bars" else f"{dataset_name}-manifest.json")
     temporary = destination.with_suffix(".csv.tmp")
     included, excluded, evidence, count = [], [], {}, 0
     with temporary.open("w", newline="", encoding="utf-8") as stream:
@@ -187,8 +188,39 @@ def build_dataset(root: Path, manifest: dict) -> dict:
     reconciliation = root / "reference" / "calendar-reconciliation.json"
     if reconciliation.exists():
         result["calendar"]["reconciliation"] = json.loads(reconciliation.read_text(encoding="utf-8"))
-    write_json(root / "dataset-manifest.json", result)
+    write_json(dataset_manifest_path, result)
     return result
+
+
+def build_reconciled_dataset(root: Path, source_manifest: dict) -> dict:
+    """Build a separately named dataset excluding unreceipted special sessions."""
+    reconciled = json.loads(json.dumps(source_manifest))
+    excluded = {}
+    for day, audit in sorted(reconciled["sessions"].items()):
+        if audit.get("status") != "valid" or audit.get("expected_bars") == 75:
+            continue
+        items = raw_evidence(audit)
+        if not items or any(
+            not all(item.get(key) for key in ("uploaded_sha256", "bucket", "s3_key", "s3_version"))
+            or item.get("uploaded_sha256") != item.get("sha256")
+            for item in items
+        ):
+            reason = "special session excluded: raw evidence is missing a complete matching upload receipt"
+            audit["status"] = "excluded"
+            audit["reconciliation_exclusion_reason"] = reason
+            excluded[day] = reason
+
+    result = build_dataset(root, reconciled, dataset_name="reconciled-bars-v1")
+    manifest_path = root / "reconciled-bars-v1-manifest.json"
+    saved = json.loads(manifest_path.read_text(encoding="utf-8"))
+    saved["reconciliation"] = {
+        "source_manifest_sha256": hashlib.sha256((root / "manifest.json").read_bytes()).hexdigest()
+        if (root / "manifest.json").exists() else None,
+        "excluded_special_sessions": excluded,
+        "special_session_rule": "expected_bars != 75 requires matching uploaded_sha256, bucket, s3_key, and s3_version on every raw evidence item",
+    }
+    write_json(manifest_path, saved)
+    return saved
 
 
 def verify_dataset(csv_path: Path, manifest_path: Path) -> dict:

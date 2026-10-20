@@ -48,6 +48,44 @@ def test_ignores_uncited_or_out_of_range_and_rejects_naive_dates():
                         documents=[], interpret=lambda _: [])
 
 
+def test_missing_publication_time_stays_unknown_but_observation_controls_cutoff(tmp_path):
+    document = doc("undated", "a factory expansion")
+    document["published_at"] = None
+    seen = []
+    proposals = lambda item: (seen.append(item) or [{"title": "Acme factory expansion",
+        "citation": "Acme Corporation announced a factory expansion"}])
+    store = ContextStore(tmp_path / "context.db")
+    result = parse_and_store(store, company="Acme", symbol="ACME", aliases=["Acme Corporation"],
+        start="2026-01-01T00:00:00Z", end="2026-01-04T00:00:00Z",
+        documents=[document], interpret=proposals)
+    event = result["batch"]["events"][0]
+    assert seen[0]["published_at"] is None
+    assert event["published_at"] is None
+    assert len(store.report("2026-01-02T23:59:59Z")["what_trust"]["events"]) == 0
+    assert len(store.report("2026-01-03T00:00:00Z")["what_trust"]["events"]) == 1
+
+
+def test_missing_publication_time_uses_observation_for_window_and_identity_fallback():
+    document = doc("undated", "a factory expansion")
+    document["published_at"] = None
+    result = parse_documents(company="Acme", symbol="ACME", aliases=["Acme Corporation"],
+        start="2026-01-03T00:00:00Z", end="2026-01-03T00:00:00Z", documents=[document],
+        interpret=lambda item: [{"title": "Acme factory expansion",
+            "citation": "Acme Corporation announced a factory expansion"}])
+    assert len(result["events"]) == 1
+    assert result["events"][0]["published_at"] is None
+    dated = doc("dated", "a factory expansion")
+    dated["published_at"] = "2026-01-03T00:00:00Z"
+    comparable = parse_documents(company="Acme", symbol="ACME", aliases=["Acme Corporation"],
+        start="2026-01-03T00:00:00Z", end="2026-01-03T00:00:00Z", documents=[dated],
+        interpret=lambda item: [{"title": "Acme factory expansion",
+            "citation": "Acme Corporation announced a factory expansion"}])
+    assert result["events"][0]["canonical_id"] == comparable["events"][0]["canonical_id"]
+    earlier = parse_documents(company="Acme", symbol="ACME", aliases=[], start="2026-01-01T00:00:00Z",
+        end="2026-01-02T23:59:59Z", documents=[document], interpret=lambda _: [])
+    assert earlier["events"] == []
+
+
 def test_cli_runs_offline_from_fixture_proposals(tmp_path):
     payload = {"company": "Acme", "symbol": "ACME", "aliases": [], "start": "2026-01-01T00:00:00Z",
         "end": "2026-01-04T00:00:00Z", "documents": [doc("one", "a factory expansion") | {

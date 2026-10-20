@@ -41,10 +41,12 @@ def parse_documents(*, company: str, symbol: str, aliases: Iterable[str], start:
         if not isinstance(url, str) or not url.startswith(("https://", "http://")) or not isinstance(source_id, str) or not source_id:
             raise ValueError("document source_id and HTTP(S) source_url are required")
         observed = _date(doc.get("observed_at"), "observed_at")
-        published = _date(doc["published_at"], "published_at") if doc.get("published_at") else observed
-        if not lower <= published <= upper:
+        published = _date(doc["published_at"], "published_at") if doc.get("published_at") else None
+        effective_date = published or observed
+        if not lower <= effective_date <= upper:
             continue
-        proposals = interpret({"source_id": source_id, "source_url": url, "published_at": published.isoformat(),
+        proposals = interpret({"source_id": source_id, "source_url": url,
+                               "published_at": published.isoformat() if published else None,
                                "text": doc["text"][:65536], "company_names": sorted(names)})
         if not isinstance(proposals, list) or len(proposals) > 20:
             raise ValueError("interpretation must return at most 20 proposals")
@@ -58,7 +60,7 @@ def parse_documents(*, company: str, symbol: str, aliases: Iterable[str], start:
                   "known_at": observed.isoformat().replace("+00:00", "Z")}
         if company_node is None:
             company_node = {"node_type": "company", "node_id": symbol.casefold(), "canonical_id": symbol,
-                "known_at": source["known_at"], "effective_from": published.isoformat().replace("+00:00", "Z"),
+                "known_at": source["known_at"], "effective_from": effective_date.isoformat().replace("+00:00", "Z"),
                 "source": source}
         for proposal in proposals:
             if not isinstance(proposal, dict):
@@ -69,11 +71,11 @@ def parse_documents(*, company: str, symbol: str, aliases: Iterable[str], start:
             if not any(name in (title + " " + quote).casefold() for name in names):
                 continue
             key = re.sub(r"\W+", " ", title.casefold()).strip()
-            canonical_id = hashlib.sha256(f"{key}|{published.date()}".encode()).hexdigest()
+            canonical_id = hashlib.sha256(f"{key}|{effective_date.date()}".encode()).hexdigest()
             event_id = hashlib.sha256(f"{canonical_id}|{source_id}|{raw_hash}".encode()).hexdigest()
             if event_id not in seen:
                 events.append({"event_id": event_id, "canonical_id": canonical_id, "source_id": source_id,
-                    "source_url": url, "published_at": published.isoformat().replace("+00:00", "Z"),
+                    "source_url": url, "published_at": published.isoformat().replace("+00:00", "Z") if published else None,
                     "observed_at": source["known_at"], "available_at": source["known_at"],
                     "raw_hash": raw_hash, "verification_status": "publisher_reported_unverified",
                     "title": title.strip(), "summary": quote, "entities": [company, symbol]})

@@ -40,14 +40,16 @@ class NovaDocumentInterpreter:
                     or not urlsplit(document["source_url"]).hostname
                     or urlsplit(document["source_url"]).username is not None
                     or urlsplit(document["source_url"]).password is not None
-                    or not isinstance(document.get("published_at"), str)
+                    or (document.get("published_at") is not None
+                        and not isinstance(document.get("published_at"), str))
                     or not isinstance(document.get("text"), str)
                     or len(document["text"].encode("utf-8")) > 65536
                     or not isinstance(document.get("company_names"), list)
                     or not document["company_names"]
                     or any(not isinstance(name, str) or not name.strip() for name in document["company_names"])):
                 return []
-            aware(document["published_at"])
+            if document.get("published_at") is not None:
+                aware(document["published_at"])
             with self.ledger.connect() as db:
                 for scope in ("infra", "storage", "bedrock"):
                     self.ledger._billing(db, scope, now)

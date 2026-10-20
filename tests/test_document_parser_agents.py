@@ -2,8 +2,8 @@ import json
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from stock_research.document_parser_agents import NovaDocumentInterpreter, build_nova_document_interpreter
-from stock_research.pilot_agents import NOVA_MODEL, PilotBudgetConfig, PriceEvidence, UsageLedger
+from stock_research.document_parser_agents import PROMPT, NovaDocumentInterpreter, build_nova_document_interpreter
+from stock_research.pilot_agents import NOVA_MODEL, PilotBudgetConfig, PriceEvidence, UsageLedger, canonical, digest
 
 NOW = datetime(2026, 10, 20, 12, tzinfo=timezone.utc)
 
@@ -42,6 +42,21 @@ def test_valid_response_is_cached(tmp_path):
     assert fake.calls == 1
 
 
+def test_undated_document_is_sent_and_audited_with_null_publication_time(tmp_path):
+    fake = FakeNova(json.dumps([{"title": "ACME revenue growth", "citation": "revenue growth of 12 percent"}]))
+    interpreter = setup(tmp_path, fake)
+    undated = {**document(), "published_at": None}
+
+    assert interpreter(undated) == [{"title": "ACME revenue growth", "citation": "revenue growth of 12 percent"}]
+    assert fake.calls == 1
+    input_hash = digest(canonical(undated))
+    call_id = digest(canonical(["test", input_hash, digest(PROMPT), NOVA_MODEL]))
+    assert interpreter.ledger.audit(call_id)["status"] == "completed"
+    with interpreter.ledger.connect() as db:
+        packet = json.loads(db.execute("SELECT input_json FROM api_calls WHERE call_id=?", (call_id,)).fetchone()[0])
+    assert packet["input_hash"] == input_hash
+
+
 def test_malformed_uncited_truncated_and_model_mismatch_fail_closed(tmp_path):
     valid = [{"title": "ACME update", "citation": "revenue growth of 12 percent"}]
     cases = [("not json", NOVA_MODEL, "end_turn"), (json.dumps([{**valid[0], "citation": "invented citation"}]), NOVA_MODEL, "end_turn"),
@@ -69,6 +84,7 @@ def test_invalid_and_oversized_input_never_calls_transport(tmp_path):
     for invalid in ({**document(), "source_id": " "}, {**document(), "source_url": "file:///tmp/a"},
                     {**document(), "source_url": "https://user:secret@example.test/report"},
                     {**document(), "published_at": "2026-10-20T12:00:00"},
+                    {**document(), "published_at": 123},
                     {**document(), "company_names": []}, {**document(), "text": "x" * 65537}):
         assert interpreter(invalid) == []
     assert fake.calls == 0

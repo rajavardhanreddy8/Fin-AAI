@@ -1,4 +1,5 @@
 import json
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -7,6 +8,11 @@ import pytest
 
 from stock_research.context_store import ContextStore
 from stock_research.parsing_storage_agent import parse_and_store, parse_documents
+
+SCRIPT = Path(__file__).parents[1] / "scripts" / "run_parsing_storage.py"
+SPEC = importlib.util.spec_from_file_location("run_parsing_storage", SCRIPT)
+runner = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(runner)
 
 
 def doc(source, title):
@@ -48,7 +54,36 @@ def test_cli_runs_offline_from_fixture_proposals(tmp_path):
             "proposals": [{"title": "Acme factory expansion", "citation": "Acme Corporation announced a factory expansion"}]}]}
     path = tmp_path / "input.json"
     path.write_text(json.dumps(payload), encoding="utf-8")
-    script = Path(__file__).parents[1] / "scripts" / "run_parsing_storage.py"
-    run = subprocess.run([sys.executable, str(script), str(path)], capture_output=True, text=True)
+    run = subprocess.run([sys.executable, str(SCRIPT), str(path)], capture_output=True, text=True)
     assert run.returncode == 0
     assert len(json.loads(run.stdout)["events"]) == 1
+
+
+def test_runner_defaults_offline_and_requires_complete_nova_options(tmp_path, monkeypatch, capsys):
+    path = tmp_path / "input.json"
+    path.write_text(json.dumps({"company": "Acme", "symbol": "ACME", "aliases": [],
+        "start": "2026-01-01T00:00:00Z", "end": "2026-01-04T00:00:00Z",
+        "documents": [{"source_id": "one", "proposals": [{"title": "fixture"}]}]}), encoding="utf-8")
+    called = {}
+    monkeypatch.setattr(runner, "parse_documents", lambda **kw: (called.update(kw) or {"events": []}))
+    monkeypatch.setattr(runner, "build_nova_document_interpreter", lambda *a, **kw: pytest.fail("Nova builder called"))
+    assert runner.main([str(path)]) == 0
+    assert called["interpret"](called["documents"][0]) == [{"title": "fixture"}]
+    with pytest.raises(SystemExit):
+        runner.main([str(path), "--nova-budget-config", "budget.json"])
+
+
+def test_runner_nova_mode_uses_builder_and_never_fixture_interpreter(tmp_path, monkeypatch, capsys):
+    path = tmp_path / "input.json"
+    path.write_text(json.dumps({"company": "Acme", "symbol": "ACME", "aliases": [],
+        "start": "2026-01-01T00:00:00Z", "end": "2026-01-04T00:00:00Z",
+        "documents": [{"source_id": "one", "proposals": [{"title": "fixture"}]}]}), encoding="utf-8")
+    sentinel, captured = lambda _: [{"title": "nova"}], {}
+    monkeypatch.setattr(runner, "build_nova_document_interpreter", lambda *a, **kw: (captured.update(args=a, kwargs=kw) or sentinel))
+    monkeypatch.setattr(runner, "parse_documents", lambda **kw: (captured.update(parse=kw) or {"events": []}))
+    assert runner.main([str(path), "--nova-budget-config", "budget.json", "--usage-db", "usage.db",
+                        "--namespace", "test", "--profile", "profile"]) == 0
+    assert captured["args"] == ("budget.json", "usage.db", "test")
+    assert captured["kwargs"] == {"profile": "profile"}
+    assert captured["parse"]["interpret"] is sentinel
+    assert captured["parse"]["interpret"](captured["parse"]["documents"][0]) == [{"title": "nova"}]

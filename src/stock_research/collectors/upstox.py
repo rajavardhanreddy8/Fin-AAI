@@ -21,6 +21,15 @@ class UpstoxError(RuntimeError):
     pass
 
 
+def _is_browser_signature_blocked(body) -> bool:
+    try:
+        payload = json.loads(body[:8192])
+    except (TypeError, UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    return (isinstance(payload, dict) and str(payload.get("error_code")) == "1010"
+            and payload.get("error_name") == "browser_signature_banned")
+
+
 def canonical_json(value) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
@@ -64,6 +73,13 @@ class UpstoxClient:
                 status = getattr(error, "code", None)
                 headers = getattr(error, "headers", {}) or {}
                 body = b""
+                if isinstance(error, HTTPError):
+                    try:
+                        body = error.read(8192)
+                    except OSError:
+                        pass
+                if _is_browser_signature_blocked(body):
+                    raise UpstoxError("Upstox blocked this request with Cloudflare error 1010 (browser signature); contact Upstox support. Do not retry this request.") from None
                 if status not in (429, 500, 502, 503, 504) or attempt == 3:
                     raise UpstoxError(f"Upstox request failed ({status or type(error).__name__}); credentials and response details redacted") from None
             else:
@@ -72,6 +88,8 @@ class UpstoxClient:
                         return json.loads(body)
                     except (UnicodeDecodeError, json.JSONDecodeError):
                         raise UpstoxError("Upstox returned malformed JSON") from None
+                if _is_browser_signature_blocked(body):
+                    raise UpstoxError("Upstox blocked this request with Cloudflare error 1010 (browser signature); contact Upstox support. Do not retry this request.")
                 if status not in (429, 500, 502, 503, 504) or attempt == 3:
                     raise UpstoxError(f"Upstox request failed (HTTP {status}); credentials and response details redacted")
             retry_after = headers.get("Retry-After", "")

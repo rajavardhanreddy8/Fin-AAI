@@ -1,5 +1,7 @@
 from datetime import date, datetime, timezone
+from io import BytesIO
 import json
+from urllib.error import HTTPError
 
 import pytest
 
@@ -99,6 +101,51 @@ def test_missing_token_and_redacted_http_failure():
     with pytest.raises(UpstoxError) as error:
         client._get("https://api.upstox.com/v2/news")
     assert "SECRET" not in str(error.value)
+
+
+def test_cloudflare_1010_tuple_is_static_and_not_retried_but_generic_403_is_generic():
+    body = b'{"error_code":1010,"error_name":"browser_signature_banned","detail":"SECRET raw provider response"}'
+    calls = []
+    client = UpstoxClient("SECRET", transport=lambda *_: (calls.append(1) or (403, {}, body)))
+    with pytest.raises(UpstoxError, match="Cloudflare error 1010.*browser signature.*contact Upstox support") as error:
+        client._get("https://api.upstox.com/v2/news")
+    assert len(calls) == 1
+    assert "SECRET" not in str(error.value) and "raw provider response" not in str(error.value)
+
+    generic = UpstoxClient("SECRET", transport=lambda *_: (403, {}, b'{"error_code":403,"detail":"browser signature"}'))
+    with pytest.raises(UpstoxError, match="HTTP 403") as generic_error:
+        generic._get("https://api.upstox.com/v2/news")
+    assert "Cloudflare" not in str(generic_error.value)
+
+    mismatched = UpstoxClient("SECRET", transport=lambda *_: (403, {}, b'{"error_code":1010,"error_name":"other_error"}'))
+    with pytest.raises(UpstoxError, match="HTTP 403") as mismatched_error:
+        mismatched._get("https://api.upstox.com/v2/news")
+    assert "Cloudflare" not in str(mismatched_error.value)
+
+
+def test_cloudflare_1010_urllib_http_error_reads_bounded_body_and_is_not_retried():
+    calls = []
+    body = b'{"error_code":1010,"error_name":"browser_signature_banned","detail":"SECRET raw provider response"}'
+
+    class BoundedBody(BytesIO):
+        read_size = None
+
+        def read(self, size=-1):
+            self.read_size = size
+            return super().read(size)
+
+    response_body = BoundedBody(body)
+
+    def request(*_):
+        calls.append(1)
+        raise HTTPError("https://api.upstox.com/v2/news", 403, "Forbidden", {}, response_body)
+
+    client = UpstoxClient("SECRET", transport=request)
+    with pytest.raises(UpstoxError, match="Cloudflare error 1010.*browser signature.*contact Upstox support") as error:
+        client._get("https://api.upstox.com/v2/news")
+    assert len(calls) == 1
+    assert response_body.read_size == 8192
+    assert "SECRET" not in str(error.value) and "raw provider response" not in str(error.value)
 
 
 def test_retry_after_http_date_uses_timezone_aware_clock_and_is_bounded():

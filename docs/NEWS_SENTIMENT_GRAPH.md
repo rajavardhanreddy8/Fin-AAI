@@ -93,4 +93,6 @@ Build snapshots or manually adjust/train/predict candidate coefficients using `s
 
 ## Remaining evidence gaps
 
+Source-history scoring and immediate paper-response guidance are documented in [SOURCE_RELIABILITY.md](SOURCE_RELIABILITY.md). They remain experimental and separate from impact scores.
+
 The Upstox gateway block prevents acquiring verified POWERGRID candle outcomes through that adapter. No real return model has been trained. The first document is historical material observed now, and its minute-horizon scores are uncalibrated hypotheses rather than a fresh intraday signal. More permitted events, verified price outcomes, source-rights review, out-of-sample comparison and forward paper measurements are needed before a predictive claim or an always-on cloud release.

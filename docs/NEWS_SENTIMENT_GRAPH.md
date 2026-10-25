@@ -48,6 +48,53 @@ Inspect the local artifacts:
 - `output/impact-pilot/20261024/manual-tuning-demo.json`: separate illustrative manual change.
 - `output/impact-pilot/20261024/verification.json`: counts, idempotency and missing-training-data check.
 
+## Populated archive graph on 25 October 2026
+
+The offline assembler `scripts/build_company_graph.py` combines the saved three-year POWERGRID sample with the earlier accepted policy pilot. The latest isolated output is `output/powergrid-graph/20261025/v4/`: `relationships.db`, `graph-report.json` and `review-queue.json`. Earlier versions remain audit snapshots. No provider inference, training, cloud resource creation or trading occurs in this step.
+
+| Stored item | Count and meaning |
+| --- | --- |
+| News/evidence | 19 immutable event versions across 18 distinct source URLs; the PIB article has two separately preserved capture versions |
+| Reported mentions | 18 article-to-company links saying the publisher discusses POWERGRID; no impact weight or truth guarantee |
+| Business exposure | One cited company-to-power-transmission activity link; a normalized business description, not an official sector classification |
+| Impact hypothesis | One unchanged policy-to-company edge and its original model score from the earlier pilot |
+| Daily observations | 15 publication-date close comparisons, stored separately with causal attribution and training-label flags both false |
+| Quarantine | 14 later model proposals and one earlier inverse proposal remain withheld; none was reversed into an accepted effect |
+
+The sector claim quotes the saved PIB description of POWERGRID's transmission business. Its evidence points to the full-text archive event and matching text hash, preserving the older bounded pilot capture unchanged. New mention and business-exposure interpretations become known at actual graph-build time. Their source observation times remain separate. An explicit older `--asof` excludes those new interpretations; omitting it uses the captured build time. Re-importing the same accepted batch adds zero events, nodes, claims, relationships or analogs.
+
+### Storage and inspection
+
+`ctx_events`, `ctx_nodes`, `ctx_claims` and `ctx_relationships` hold the cited graph. The original score uses the existing `ctx_edge_scores` registry. The manual tuning demonstration stays excluded and has only an audit hash in this import. Source reliability, model confidence and effect weight remain separate; no publisher has adjudicated reliability history.
+
+Supplemental SQL tables make the saved evidence inspectable:
+
+- `graph_sources`: source-to-event provenance, with source URL, observation availability and content hash.
+- `graph_event_versions`: source URL groups and exact original event payloads, preserving revisions without counting them as independent stories.
+- `graph_adjacency`: incoming and outgoing references to the same directed relationship, with its known time. These references do not create inverse influence.
+- `graph_daily_outcomes`: descriptive daily comparisons and their actual availability; these are not minute-horizon outcomes or causal edges.
+- `graph_review_queue`: original proposal direction, citation and audit references retained for review.
+- `graph_import_audit`: seven input hashes, including the archive manifest and the excluded manual demonstration.
+
+Read the report's `directional_adjacency` to inspect both sides of a relationship. Direct SQL inspection must apply its time cutoff, for example:
+
+```sql
+SELECT direction, relationship_id, known_at
+FROM graph_adjacency
+WHERE node_type = 'company' AND node_id = 'powergrid'
+  AND julianday(known_at) <= julianday(:asof);
+```
+
+The builder requires explicit saved inputs and new output paths. Use `python scripts/build_company_graph.py --help` for the arguments. It verifies the archive's sibling manifest when present, source text hashes and company identity; hashes detect local content changes and do not authenticate a publisher. Its report distinguishes complete import inventory from records visible at the requested cutoff.
+
+Root verification passed 46 focused graph/store/score tests. After the final report-only fields were added, the three graph-specific tests passed again. Synthetic fixtures make these tests independent of ignored local output. Independent artifact reviews are `output/powergrid-graph/20261025/review-v1.json` and `review-v2-independent.json`. An interrupted write left `review-v2.json` containing null; it is not a validation receipt.
+
+### Remaining connections
+
+Official index membership, dated constituent weights and official sector classification remain pending. The official Nifty constituent CSV could not be read by the browser because of its MIME type; one ordinary HTTPS download then failed TLS verification. Both failure receipts are retained under `output/powergrid-graph/20261025/evidence/`; verification was not weakened and no membership row was fabricated.
+
+The graph is usable for evidence lookup and review. It is not a calibrated sentiment predictor. Broader permitted news coverage, adjudicated source facts, independently corroborated prices, point-in-time evidence and untouched evaluation remain required before predictive training or trading qualification.
+
 ## Updating weights and learning
 
 Evidence is append-only. Change a manually assigned score by adding another `score_version` with a later `score_known_at` and explicit manual origin. Read the chosen version with `load_edge_scores`; a query does not silently choose or activate the latest score. Existing version IDs reject changed content.

@@ -1,5 +1,13 @@
 # Firecrawl article extraction
 
+## Connected-tool spending safeguard
+
+The 25 October 2026 POWERGRID collection exceeded its assigned limit when an agent used concurrent `firecrawl_search` calls with `scrapeOptions`. Returned receipts totaled 721 credits. The existing bounded local extraction adapter was not the path used. See [the dataset incident record](POWERGRID_THREE_YEAR_DATASET.md#collection-cost-incident).
+
+For connector-based discovery, omit `scrapeOptions` entirely, exclude unrelated video/profile results, and use actual date filters rather than dates written only in natural-language queries. Start with one request and inspect its results, receipt and balance before proceeding sequentially. Do not attach page extraction or execute a provider before reviewing its specific cost contract. No returned page count or post-request balance check constitutes a hard spending cap; if the maximum request cost cannot be established within the authorized budget, do not execute it. After a cap breach, stop further billed requests pending explicit approval. Keep failed and out-of-window results in the audit rather than claiming collection coverage.
+
+## Local bounded extraction adapter
+
 Firecrawl is an optional extractor for specifically selected public articles discovered through an existing feed or API. Each invocation accepts at most five exact URLs that appear in a registry. There is no crawl, pagination, scheduler, or subscription. Copy `config/firecrawl-sources.example.json` to `config/firecrawl-sources.json`, document the publisher's exact URL permission, terms, retention, and reuse uncertainty, then set `permitted` to true only after review. The example remains disabled. Keep the publisher `source_id` separate from the provider (`firecrawl`).
 
 The standard command is a dry-run and does not need credentials:

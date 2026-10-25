@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from stock_research.company_impact import build_impact_batch, save_edge_scores
+from stock_research.company_impact import build_impact_batch, save_edge_scores, validate_impact_input
 from stock_research.context_store import ContextStore
 from stock_research.document_parser_agents import build_nova_relationship_interpreter
 from stock_research.impact_graph import build_snapshot
@@ -32,6 +32,9 @@ def main(argv=None):
         document = payload["document"]
         if not payload.get("reviewed_directions"):
             raise ValueError("reviewed source-specific driver/recipient directions are required")
+        validate_impact_input(document, payload.get("reviewed_directions"))
+        if not isinstance(payload.get("title"), str) or not payload["title"].strip():
+            raise ValueError("source title is required")
         interpreter = build_nova_relationship_interpreter(str(args.budget_config), str(args.usage_db), args.namespace, profile=args.profile)
         result = interpreter.interpret_with_audit(document)
         if result["status"] != "completed":

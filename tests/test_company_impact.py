@@ -6,9 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from stock_research.company_impact import build_impact_batch, load_edge_scores, save_edge_scores
+from stock_research.company_impact import build_impact_batch, load_edge_scores, save_edge_scores, validate_impact_input
 from stock_research.context_store import ContextStore
 from stock_research.pilot_agents import NOVA_MODEL
+from stock_research.pilot_agents import canonical, digest
 
 
 def inputs():
@@ -47,6 +48,34 @@ def test_model_claims_are_stored_once_and_never_backdated_to_publication(tmp_pat
     assert store.report("2026-02-25T00:00:00Z")["what_trust"]["events"] == []
     assert store.report("2026-10-24T06:00:30Z")["who_how"]["relationships"] == []
     assert len(store.report(NOW.isoformat())["who_how"]["relationships"]) == 1
+    assert batch["events"][0]["verification_status"] == "publisher_reported_unverified"
+    assert batch["claims"][0]["source_authority"] == "publisher_reported"
+
+
+@pytest.mark.parametrize("authority", ["government_release", "issuer_release", "publisher_reported"])
+def test_source_authority_is_explicitly_bounded(authority):
+    document, result = inputs()
+    output = build_impact_batch({**document, "source_authority": authority}, result, title="Release", now=NOW)
+    assert output["batch"]["claims"][0]["source_authority"] == authority
+    assert output["batch"]["claims"][0]["truth_status"] == "publisher_reported"
+
+
+def test_event_to_company_hypothesis_uses_only_auto_event_node():
+    document, result = inputs()
+    event_id = digest(canonical([document["source_url"], digest(document["text"]), document["observed_at"]]))
+    document["allowed_nodes"] = [{"node_type": "event", "node_id": event_id}, document["allowed_nodes"][1]]
+    result["proposals"][0].update(subject_type="event", subject_id=event_id, object_type="company", object_id="powergrid")
+    result["audit"]["proposals"] = deepcopy(result["proposals"])
+    output = build_impact_batch(document, result, title="News report", now=NOW)
+    assert output["batch"]["relationships"][0]["subject_id"] == event_id
+    assert all(node["node_type"] != "event" for node in output["batch"]["nodes"])
+
+
+def test_wrong_supplied_event_endpoint_is_rejected():
+    document, result = inputs()
+    document["allowed_nodes"].append({"node_type": "event", "node_id": "not-the-auto-event"})
+    with pytest.raises(ValueError, match="event endpoint"):
+        build_impact_batch(document, result, title="News report", now=NOW)
 
 
 @pytest.mark.parametrize("change", ["failed", "tampered", "early_completion", "future_completion", "uncited"])
@@ -74,6 +103,31 @@ def test_existing_output_is_rejected_before_building_any_model(tmp_path, monkeyp
     assert module.main(["missing.json", "--db", str(tmp_path / "graph.db"), "--output", str(output),
                         "--budget-config", "missing.json", "--usage-db", "missing.db", "--namespace", "test"]) == 2
     assert json.loads(output.read_text())["preserved"] is True
+
+
+@pytest.mark.parametrize("bad_field", ["mapping", "event", "authority", "missing_directions", "empty_directions"])
+def test_runner_rejects_invalid_input_shapes_before_model_construction(tmp_path, monkeypatch, bad_field):
+    path = Path(__file__).parents[1] / "scripts" / "run_company_impact.py"
+    spec = importlib.util.spec_from_file_location("company_impact_preflight_runner", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    document, _ = inputs()
+    payload = {"document": document, "title": "Release", "reviewed_directions": [["policy", "delegation", "company", "powergrid"]]}
+    if bad_field == "mapping": payload["reviewed_directions"] = ["policy", "delegation", "company", "powergrid"]
+    if bad_field == "event": document["allowed_nodes"].append({"node_type": "event", "node_id": "wrong"})
+    if bad_field == "authority": document["source_authority"] = "self_certified_primary"
+    if bad_field == "missing_directions": payload.pop("reviewed_directions")
+    if bad_field == "empty_directions": payload["reviewed_directions"] = []
+    input_path = tmp_path / "input.json"
+    input_path.write_text(json.dumps(payload), encoding="utf-8")
+    monkeypatch.setattr(module, "build_nova_relationship_interpreter", lambda *a, **k: pytest.fail("model must not be built"))
+    assert module.main([str(input_path), "--db", str(tmp_path / "graph.db"), "--output", str(tmp_path / "out.json"),
+                        "--budget-config", "missing.json", "--usage-db", "missing.db", "--namespace", "test"]) == 2
+
+
+def test_impact_input_preflight_accepts_nested_reviewed_mapping():
+    document, _ = inputs()
+    assert validate_impact_input(document, [["policy", "delegation", "company", "powergrid"]], now=NOW)
 
 
 def test_unreviewed_reverse_proposal_is_retained_but_not_imported():

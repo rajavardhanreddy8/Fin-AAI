@@ -5,6 +5,7 @@ import pytest
 from stock_research.primary_document_admission import validate_primary_document
 import stock_research.primary_document_admission as admission
 from stock_research.context_store import ContextStore
+from stock_research.parsing_storage_agent import parse_documents
 
 
 TEXT = "Power Grid Corporation of India Limited announced a transmission project."
@@ -85,13 +86,32 @@ def test_admission_rejects_invalid_envelope_before_storage(tmp_path, monkeypatch
 def test_admission_stores_one_cited_primary_event(tmp_path):
     raw = TEXT.encode()
     candidate = envelope(raw)
-    candidate["time"].update(observed_at="2026-10-26T02:10:00Z", rights_checked_at="2026-10-26T02:00:00Z")
+    candidate["time"].update(observed_at="2026-10-26T02:00:00Z", rights_checked_at="2026-10-26T02:10:00Z")
     store = ContextStore(tmp_path / "valid.db")
     result = admission.admit_primary_document_and_store(store, candidate, raw,
         start="2026-10-26T00:00:00Z", end="2026-10-27T00:00:00Z",
         interpret=lambda _: [{"title": "Power Grid Corporation transmission project",
                               "citation": "announced a transmission project"}])
     assert result["added"]["events"] == 1
+    assert result["batch"]["events"][0]["observed_at"] == "2026-10-26T02:00:00Z"
     assert result["batch"]["events"][0]["available_at"] == "2026-10-26T02:10:00Z"
     assert result["batch"]["events"][0]["published_at"] is None
+    assert len(store.report("2026-10-26T02:09:59Z")["what_trust"]["events"]) == 0
     assert len(store.report("2026-10-26T02:10:00Z")["what_trust"]["events"]) == 1
+
+
+def test_parser_optional_available_at_is_validated_without_changing_default():
+    document = {"source_id": "one", "source_url": "https://news.test/one",
+        "published_at": "2026-01-02T00:00:00Z", "observed_at": "2026-01-03T00:00:00Z",
+        "text": "Acme Corporation announced a factory expansion with evidence.",
+        "available_at": "2026-01-04T00:00:00Z"}
+    result = parse_documents(company="Acme", symbol="ACME", aliases=["Acme Corporation"],
+        start="2026-01-01T00:00:00Z", end="2026-01-05T00:00:00Z", documents=[document],
+        interpret=lambda _: [{"title": "Acme factory expansion",
+            "citation": "Acme Corporation announced a factory expansion"}])
+    assert result["events"][0]["available_at"] == "2026-01-04T00:00:00Z"
+    document["available_at"] = "2026-01-02T00:00:00Z"
+    with pytest.raises(ValueError, match="available_at"):
+        parse_documents(company="Acme", symbol="ACME", aliases=["Acme Corporation"],
+            start="2026-01-01T00:00:00Z", end="2026-01-05T00:00:00Z", documents=[document],
+            interpret=lambda _: [])

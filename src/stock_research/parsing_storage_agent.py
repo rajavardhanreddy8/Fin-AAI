@@ -42,6 +42,9 @@ def parse_documents(*, company: str, symbol: str, aliases: Iterable[str], start:
             raise ValueError("document source_id and HTTP(S) source_url are required")
         observed = _date(doc.get("observed_at"), "observed_at")
         published = _date(doc["published_at"], "published_at") if doc.get("published_at") else None
+        available = _date(doc["available_at"], "available_at") if doc.get("available_at") else observed
+        if available < max(observed, published or observed):
+            raise ValueError("available_at cannot precede document observation or publication")
         effective_date = published or observed
         if not lower <= effective_date <= upper:
             continue
@@ -57,7 +60,7 @@ def parse_documents(*, company: str, symbol: str, aliases: Iterable[str], start:
                 raise ValueError("raw_hash must be a SHA-256 hex digest")
             raw_hash = supplied_hash.lower()
         source = {"source_id": source_id, "source_url": url, "raw_hash": raw_hash,
-                  "known_at": observed.isoformat().replace("+00:00", "Z")}
+                  "known_at": available.isoformat().replace("+00:00", "Z")}
         if company_node is None:
             company_node = {"node_type": "company", "node_id": symbol.casefold(), "canonical_id": symbol,
                 "known_at": source["known_at"], "effective_from": effective_date.isoformat().replace("+00:00", "Z"),
@@ -76,7 +79,7 @@ def parse_documents(*, company: str, symbol: str, aliases: Iterable[str], start:
             if event_id not in seen:
                 events.append({"event_id": event_id, "canonical_id": canonical_id, "source_id": source_id,
                     "source_url": url, "published_at": published.isoformat().replace("+00:00", "Z") if published else None,
-                    "observed_at": source["known_at"], "available_at": source["known_at"],
+                    "observed_at": observed.isoformat().replace("+00:00", "Z"), "available_at": available.isoformat().replace("+00:00", "Z"),
                     "raw_hash": raw_hash, "verification_status": "publisher_reported_unverified",
                     "title": title.strip(), "summary": quote, "entities": [company, symbol]})
                 seen.add(event_id)

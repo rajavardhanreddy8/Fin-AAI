@@ -105,8 +105,6 @@ def admit_primary_document_and_store(store, envelope: dict, raw_bytes: bytes, *,
                                     interpret) -> dict:
     """Validate one retained source before passing only its cited proposals to ContextStore."""
     admitted = validate_primary_document(envelope, raw_bytes)
-    if admitted["available_at"] != admitted["observed_at"]:
-        raise ValueError("the current parser requires rights review and publication to be known by observation time")
     published = admitted["published_at"]
     if isinstance(published, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", published):
         published = None  # Keep date-only precision in the admission record; the parser accepts timestamps only.
@@ -117,7 +115,7 @@ def admit_primary_document_and_store(store, envelope: dict, raw_bytes: bytes, *,
 
     result = parse_and_store(store, company=POWERGRID["company"], symbol=POWERGRID["symbol"],
         aliases=["Power Grid Corporation", "POWERGRID"], start=start, end=end,
-        documents=[{key: admitted[key] for key in ("source_id", "source_url", "raw_hash", "text", "observed_at")}
+        documents=[{key: admitted[key] for key in ("source_id", "source_url", "raw_hash", "text", "observed_at", "available_at")}
                    | {"published_at": published}], interpret=cited_interpretation)
     result["admitted_source"] = admitted
     return result

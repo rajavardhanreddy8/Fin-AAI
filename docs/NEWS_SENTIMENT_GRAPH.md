@@ -117,6 +117,8 @@ The unique **POWERGRID / INE752E01010 / EQ** row dated **23 October 2026** recor
 
 The original ZIP, request receipt, comparison, limitations and independent review are retained in `output/official-price-corroboration/20261025/probe-v1/`. The canonical price CSV and graph databases were unchanged. This corroborates one date for one instrument; the other 739 rows, session completeness, adjusted-price equivalence and source retention/reuse rights remain unreviewed. It supplies no minute-horizon label or causal attribution and does not qualify a predictor or trading system.
 
+`scripts/verify_powergrid_bhavcopy.py` now makes the same check reusable without downloading anything. It accepts a previously saved official ZIP, the retained provider JSON, a trading date and a new output path; it rejects wrong identity, series or date, and compares only unadjusted OHLCV. The first offline replay is `output/official-price-corroboration/20261026/replay-v1.json`. It is a one-date verifier, not a backfill tool.
+
 ## Updating weights and learning
 
 Evidence is append-only. Change a manually assigned score by adding another `score_version` with a later `score_known_at` and explicit manual origin. Read the chosen version with `load_edge_scores`; a query does not silently choose or activate the latest score. Existing version IDs reject changed content.

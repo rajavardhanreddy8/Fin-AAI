@@ -19,6 +19,12 @@ Selected on 2026-10-24 Asia/Kolkata for company-news research and paper evaluati
 | Issuer announcements | [POWERGRID press releases](https://www.powergrid.in/en/press-release) | Reviewed as a source candidate only. No automated collection permission was established. |
 | Results and financial statements | [POWERGRID annual results](https://www.powergrid.in/en/annual-results) | Reviewed as a source candidate only. Do not treat website availability as a training-data license. |
 
+## Archived-news audit, 26 October 2026
+
+The local catalog and dataset manifest contain **17** dated publisher records, correcting an earlier planning count of 18. Their URL, title, capture hash and manifest bindings all validate; no duplicate URL or captured-content hash was found. Every record was observed retrospectively on 25 October 2026 and stores selected excerpts rather than a full licensed article. None is eligible as a historical decision-time feature or a training record because retention, redistribution and model-training rights are unestablished. The full audit is at `output/company-news-gap/20261026/audit-v1.json`.
+
+POWERGRID's own [press-release archive](https://www.powergrid.in/en/press-release), [meetings/notices archive](https://www.powergrid.in/en/meetingsnotices), [annual-results archive](https://www.powergrid.in/en/annual-results), and [financial-presentations archive](https://www.powergrid.in/en/financials-presentations) provide dated primary-document candidates across the needed period. They are discovery and manual-review channels until their automated retrieval and retention terms are recorded. Primary status does not itself create a training-data license.
+
 Upstox's [Analytics Token documentation](https://upstox.com/developer/api-documentation/analytics-token/) documents free read-only news and historical access without a static IP, with one-year token validity. Its [News API](https://upstox.com/developer/api-documentation/get-news/) supplies only the preceding seven days; this is not a five-year news archive.
 
 ## Verified access diagnosis
@@ -33,7 +39,8 @@ AWS `fin-aai` identity verification succeeded on 2026-10-24. AWS authentication 
 
 ## Next acceptance check
 
-1. Obtain provider-approved access to the documented API endpoints.
-2. Recheck one POWERGRID news page and one completed five-minute price session; retain provenance only under confirmed usage rights.
-3. Parse cited events and propose explicit policy/company/sector relationships using the existing agents. Preserve unknown dates and observed times.
-4. Measure subsequent price outcomes without claiming causation. Train only after coverage, rights and chronological evaluation checks pass.
+1. Record a source-specific permission and retention decision for the POWERGRID primary-document archives; do not scrape or train on them until then.
+2. Obtain provider-approved access to the documented Upstox API endpoints.
+3. Recheck one POWERGRID news page and one completed five-minute price session; retain provenance only under confirmed usage rights.
+4. Parse cited events and propose explicit policy/company/sector relationships using the existing agents. Preserve unknown dates and observed times.
+5. Measure subsequent price outcomes without claiming causation. Train only after coverage, rights and chronological evaluation checks pass.

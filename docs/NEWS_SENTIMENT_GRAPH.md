@@ -91,9 +91,31 @@ Root verification passed 46 focused graph/store/score tests. After the final rep
 
 ### Remaining connections
 
-Official index membership, dated constituent weights and official sector classification remain pending. The official Nifty constituent CSV could not be read by the browser because of its MIME type; one ordinary HTTPS download then failed TLS verification. Both failure receipts are retained under `output/powergrid-graph/20261025/evidence/`; verification was not weakened and no membership row was fabricated.
+At the v4 checkpoint, official index membership, dated constituent weights and official sector classification were pending. The official Nifty constituent CSV could not be read by the browser because of its MIME type; one ordinary HTTPS download then failed TLS verification. Both failure receipts are retained under `output/powergrid-graph/20261025/evidence/`; verification was not weakened and no membership row was fabricated. The later permitted-network download and dated snapshot import below resolve one historical exposure fact; current membership and current weights remain unknown.
 
 The graph is usable for evidence lookup and review. It is not a calibrated sentiment predictor. Broader permitted news coverage, adjudicated source facts, independently corroborated prices, point-in-time evidence and untouched evaluation remain required before predictive training or trading qualification.
+
+## Reviewed source fact and historical index exposure
+
+The latest reviewed derived graph is `output/index-exposure/20261025/applied-v3/relationships.db`. It extends a SQLite backup of the source-review graph in `output/source-adjudication/20261025/applied-v2/`, which itself preserves the v4 graph. Every parent row is retained; earlier failed generated attempts are explicitly marked invalid. Current/pre-cutoff reports, manifests, verification and `independent-review-plan-v1.json` are beside the final database.
+
+The [official Nifty 50 whitepaper](https://niftyindices.com/docs/default-source/indices/nifty-50/nifty-50-whitepaper_2026.pdf?sfvrsn=dd206335_2), Exhibit 26 on PDF page 22 (printed page 42), lists POWERGRID with sector **Power** and weight **1.18%** in the snapshot dated **27 February 2026**. The original PDF, SHA-256 and rendered table are retained under `output/powergrid-graph/20261025/evidence/index-permitted-download-v1/`. A normal HTTPS download succeeded after requesting permitted network access; TLS validation and source identity were unchanged. Text and visual row alignment were both checked.
+
+That weight is stored in a cited `documented_exposure` claim and company-to-index relationship with `snapshot_date=2026-02-27`, `temporal_scope=historical_snapshot_only` and `current_membership_asserted=false`. It is not an `estimated_effect`, impact score or tunable coefficient. No continuous membership interval is inferred. The snapshot date is not treated as publication time; publication remains unknown and actual October retrieval/review times control availability. The PDF does not supply a symbol or ISIN; the separate issuer filing provides that identity cross-check.
+
+The derived database contains 21 evidence-event versions, 25 nodes, 21 cited claims and 21 directed relationships. It retains the one original impact score, 15 descriptive daily observations and 15 withheld proposals. Supplemental provenance/version tables include the new verification and index documents, and 42 adjacency references cover both directions of the 21 existing directed edges. The index import adds one source event, one index node, one claim and one relationship; replay adds zero. A cutoff before the actual review excludes the new index connection.
+
+The source history contains one AI-assisted, narrowly scoped confirmed appointment proposition; its experimental score is uncalibrated and below the historical sample threshold. No origin-authentication reviews or trading permissions were added. See [source review details](SOURCE_RELIABILITY.md). The prior model-score payload is unchanged, and official weights remain separate from that score.
+
+The broker-independent RSS collector is a separate local infrastructure checkpoint: `output/alternative-news-20261025/events.json` contains 20 general PIB observations with unknown publication dates and no POWERGRID title matches. They are not imported as POWERGRID relationships or historical trading features. The provider track reports 21 tests in its local `docs/DATA_PROVIDER_ALTERNATIVES.md` plan; this graph milestone did not rerun or publish that track's pending code changes. Independent daily-price reconciliation, broader permitted news, source adjudications and prospective measurement still remain.
+
+## One-date official NSE price corroboration
+
+The [official NSE CM-UDiFF archive for 23 October 2026](https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20261023_F_0000.csv.zip) was retrieved once over normal HTTPS, returning HTTP 200 without a redirect. The ZIP was observed at **2026-10-25T17:19:47.870834Z**; that is evidence availability, not its trading date. Its SHA-256 is `009b57f15cb36e14fa956b2e585b69b23f279eb8532c2c63c0adf0aa2ed77689`.
+
+The unique **POWERGRID / INE752E01010 / EQ** row dated **23 October 2026** records open **248.05**, high **248.60**, low **242.30**, close **247.40**, and volume **5,917,098**. Independent review parsed the original ZIP CSV in memory and compared all five values directly with the original saved Yahoo provider response in `output/powergrid-history/20261025/prices/yahoo-provider-v1/provider-data.json`, using its unadjusted OHLC and volume. The values match exactly. Identity, date, OHLC bounds, volume, source hashes and artifact receipts were checked.
+
+The original ZIP, request receipt, comparison, limitations and independent review are retained in `output/official-price-corroboration/20261025/probe-v1/`. The canonical price CSV and graph databases were unchanged. This corroborates one date for one instrument; the other 739 rows, session completeness, adjusted-price equivalence and source retention/reuse rights remain unreviewed. It supplies no minute-horizon label or causal attribution and does not qualify a predictor or trading system.
 
 ## Updating weights and learning
 

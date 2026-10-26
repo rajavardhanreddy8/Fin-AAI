@@ -111,7 +111,19 @@ These clearly synthetic examples show the record shapes. The values are fixtures
 
 `paper_evaluate_now` means eligible for a review-only paper evaluation. It is distinct from a paper trade; execution is always `none`, and no BUY/SELL direction or order is produced. Input record and response details follow the versioned `stock_research.source_reliability` API. Keep original upstream origin with every review. An illustrative fixture in the command tests is synthetic and is not evidence of any publisher's performance.
 
-## Local artifacts
+## First reviewed real fact, 25 October 2026
+
+`output/source-adjudication/20261025/applied-v2/relationships.db` is a SQLite backup of the populated POWERGRID graph with one additional issuer-filing event and one narrowly scoped source adjudication. The parent graph is unchanged. `adjudication-v1.json`, `scope-note.md`, before/after scores, `import-manifest.json`, `verification.json` and `independent-review-plan-v1.json` preserve the import and its review. The encoding-corrupted earlier `applied-v1` attempt is marked invalid and is not an accepted dataset.
+
+The selected PIB report says the named person assumed POWERGRID's CMD position. A separate [POWERGRID governance filing](https://www.powergrid.in/sites/default/files/Investor_Relation/Reports_Filings/Corporate_Governance/2026-27/CG_Report_2026-27_Q1.html) supports that appointment and supplies an effective date of 1 April 2026. The verdict covers the selected appointment proposition; it does not adjudicate other article statements, establish an exact assumption hour or count company-origin documents as independently originating reports.
+
+The reviewer is explicitly AI-assisted, with no authenticated human identity assertion. No origin-authentication review was added. Full source captures, exact citations and original hashes are separate from the new verdict time. The filing's quarter-end date is not used as publication time; publication remains unknown, and actual capture availability is retained.
+
+The `pib-ministry-of-power` / `powergrid` / `governance_policy` history changes from zero resolved records to one confirmed selected proposition. Its beta-smoothed mean is approximately 0.667 and Wilson lower bound approximately 0.207. These are small-sample experimental statistics, not a demonstrated publisher accuracy rate or a probability that the next report is true. The score remains `calibrated=false`, `live_order_authorized=false`, and below the 20-record historical admission threshold. Other company/category scopes gain no evidence from this review.
+
+Replay adds zero adjudications. A cutoff immediately before the verdict still returns zero resolved records. The original 20 graph relationships, one model score, 15 descriptive daily outcomes and 15 quarantined proposals are preserved. The issuer filing also provides a separately recorded company-reported symbol/ISIN identity check against Yahoo metadata; it does not corroborate price values or exchange-calendar coverage.
+
+## Local artifacts from the earlier pilot
 
 The POWERGRID experiment has an isolated copy of the source-linked graph at `output/source-reliability/20261024/powergrid-source-review.db`. Verification on 24 October 2026 found one event, one claim, one relationship, zero truth adjudications and zero origin reviews. Its actual response is `monitor_now`: the report is stale and no origin review is available. The saved outputs are:
 
